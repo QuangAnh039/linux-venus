@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: GPL-2.0-only
+config CRYPTO_DEV_RTK
+	tristate "RTK crypto driver"
+	select CRYPTO_AEAD
+	select CRYPTO_SKCIPHER
+	select CRYPTO_ENGINE
+	help
+          Enable support for the Realtek hardware cryptographic accelerator.
+          This driver provides cryptographic operations. It is designed to offload
+	  cryptographic computations to dedicated hardware, improving performance
+	  and reducing CPU usage.
+
+          If you enable this option, the driver will be compiled as a module or 
+          built-in, depending on your selection. It depends on the presence of 
+          a compatible Realtek cryptographic engine in your system.
+
+          Select 'M' to compile it as a loadable module, or 'Y' 
+          to include it directly in the kernel image.
+
+choice
+	prompt "CRYPTO DEV RTK VER"
+	depends on CRYPTO_DEV_RTK
+	default CRYPTO_DEV_RTK_TAURUS
+	help
+          Select the version of the Realtek cryptographic hardware
+          accelerator supported by the driver. Depending on your platform,
+          choose the appropriate hardware version.
+
+          - TAURUS: For Realtek TAURUS cryptographic accelerator.
+          - MERCURY: For Realtek MERCURY cryptographic accelerator.
+
+config CRYPTO_DEV_RTK_TAURUS
+	bool "RTK_TAURUS"
+	help
+          Enable support for the Realtek TAURUS cryptographic accelerator.
+          This version is designed for specific Realtek platforms that include
+          the TAURUS hardware. Selecting this option ensures compatibility
+          with TAURUS-specific features and optimizations.
+
+config CRYPTO_DEV_RTK_MERCURY
+	bool "RTK_MCRCURY"
+	help
+          Enable support for the Realtek MERCURY cryptographic accelerator.
+          This version is tailored for Realtek platforms with the MERCURY
+          hardware. Choose this option to leverage MERCURY-specific
+          functionalities and optimizations.
+endchoice

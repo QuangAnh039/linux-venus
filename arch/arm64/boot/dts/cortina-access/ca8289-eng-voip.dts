@@ -1,0 +1,26 @@
+// SPDX-License-Identifier: GPL-2.0
+
+//#include "ca8289-eng-voip-pe.dts" /* used for DSP on PE */
+
+/ {
+	voip_ipc@0x2700000 {
+		compatible = "cortina-access,voip_ipc";
+	};
+};
+
+&audio {
+	compatible = "cortina-access,ca77xx-audio";
+};
+
+&spi0 {
+	/* GPIO_ACTIVE_LOW is meaningless, it is decided by spidev mode & SPI_CS_HIGH */
+	//cs-gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
+
+	slic_spi0: slic_spi0@0 {
+		compatible = "realtek,support-slic";
+		status = "okay";
+		spi-max-frequency = <2500000>;
+		reg = <0>;
+		reset-gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
+	};
+};

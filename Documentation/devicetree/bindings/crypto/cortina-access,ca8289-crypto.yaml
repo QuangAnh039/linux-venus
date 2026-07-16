@@ -1,0 +1,138 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2024 Cortina-Access
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/crypto/cortina-access,ca8289-crypto.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: Cortina-Access Venus SPACC Crypto
+
+maintainers:
+  - Eason Chiang <eason.chiang@cortina-access.com>
+
+properties:
+  compatible:
+     const: ca,ca8289-crypto
+     const: cortina,ca77xx-mpm
+     const: cortina,ca77xx-clp800
+     const: ca,ca8289-spacc
+
+  reg:
+    maxItems: 1
+
+  reg-names:
+    items:
+      - const: glbl_regs, rc_dbi, config, iatu, serdes_phy
+
+required:
+  - compatible
+  - reg
+
+
+additionalProperties: false
+
+examples:
+  - |
+	crypto0: crypto@90500000 {
+		compatible = "ca,ca8289-crypto";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		reg = <0x0 0x90500000 0x0 0x8000>;
+		ranges = <0x0 0x0 0x90500000 0x100000>;
+
+		epn-virt-id = <0x12030000>;
+		iommus = <&crypto0_atu>;
+		dma-coherent;
+
+		mpm0: mpm@c000 {
+			compatible = "cortina,ca77xx-mpm";
+			reg = <0xc000 0x2000>;
+			epn-virt-id = <0x12030000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP0_MPM IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		trng0: clp800@18000 {
+			compatible = "cortina,ca77xx-clp800";
+			reg = <0x18000 0x8000>;
+			epn-virt-id = <0x12030000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP0_RNG IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		spacc0_0: spacc00@40000 {
+			compatible = "ca,ca8289-spacc";
+			reg = <0x40000 0x40000>;
+			epn-virt-id = <0x12030000>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP0_0 IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		spacc0_1: spacc01@80000 {
+			compatible = "ca,ca8289-spacc";
+			reg = <0x80000 0x40000>;
+			epn-virt-id = <0x12030001>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP0_1 IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		spacc0_2: spacc02@c0000 {
+			compatible = "ca,ca8289-spacc";
+			reg = <0xc0000 0x40000>;
+			epn-virt-id = <0x12030002>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP0_2 IRQ_TYPE_LEVEL_HIGH>;
+		};
+	};
+
+	crypto1: crypto@90600000 {
+		compatible = "ca,ca8289-crypto";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		reg = <0x0 0x90600000 0x0 0x8000>;
+		ranges = <0x0 0x0 0x90600000 0x100000>;
+
+		epn-virt-id = <0x12030010>;
+		iommus = <&crypto1_atu>;
+		dma-coherent;
+
+		mpm1: mpm@c000 {
+			compatible = "cortina,ca77xx-mpm";
+			reg = <0xc000 0x2000>;
+			epn-virt-id = <0x12030010>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP1_MPM IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		trng1: clp800@18000 {
+			compatible = "cortina,ca77xx-clp800";
+			reg = <0x18000 0x8000>;
+			epn-virt-id = <0x12030010>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP1_RNG IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		spacc1_0: spacc10@40000 {
+			compatible = "ca,ca8289-spacc";
+			reg = <0x40000 0x40000>;
+			epn-virt-id = <0x12030010>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP1_0 IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		spacc1_1: spacc11@80000 {
+			compatible = "ca,ca8289-spacc";
+			reg = <0x80000 0x40000>;
+			epn-virt-id = <0x12030011>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP1_1 IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		spacc1_2: spacc12@c0000 {
+			compatible = "ca,ca8289-spacc";
+			reg = <0xc0000 0x40000>;
+			epn-virt-id = <0x12030012>;
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_CRYP1_2 IRQ_TYPE_LEVEL_HIGH>;
+		};
+	};

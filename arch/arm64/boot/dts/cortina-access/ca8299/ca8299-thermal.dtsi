@@ -1,0 +1,78 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (C) 2025, Cortina Access Inc.
+ *
+ * ca8299-thermal.dtsi - Device Tree Include file for CA8299
+ * thermal zone.
+ */
+#include <dt-bindings/thermal/thermal.h>
+
+/ {
+	thermal: thermal@f43202d0 {
+		compatible = "cortina-access,thermal-sensor";
+		reg = <0 0xf43202d0 0 0x10>;
+		status = "okay";
+		tms-reg-a = <0x088e0000>;       /* Thermal parameter A */
+		tms-reg-b = <0x0036ad99>;       /* Thermal parameter B */
+		#thermal-sensor-cells = <0>;
+	};
+	thermal-zones {
+		cpu_thermal: cpu-thermal {
+			polling-delay-passive = <500>; /* milliseconds */
+			polling-delay = <1000>; /* milliseconds */
+			thermal-sensors = <&thermal>;
+
+			trips {
+				cpu_alert0: cpu-alert0 {
+					temperature = <90000>; /* millicelsius */
+					hysteresis =  <5000>; /* millicelsius */
+					type = "active";
+				};
+				cpu_crit0: cpu-crit0 {
+					temperature = <115000>; /* millicelsius */
+					hysteresis = <5000>; /* millicelsius */
+					type = "critical";
+				};
+			};
+
+			cooling-maps {
+				map0 {
+					trip = <&cpu_alert0>;
+					cooling-device = <&cpu0 0 11>;
+				};
+				map1 {
+					trip = <&cpu_crit0>;
+					cooling-device = <&cpu0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
+				};
+			};
+		};
+	};
+
+	/* Fix voltage w/o CPU regulator */
+	cpus {
+		#address-cells = <2>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			//cpu-supply = <&vdd_regulator>;
+			clock-latency = <100000>;
+			operating-points =
+				<2000000 900000>,
+				<1800000 900000>,
+				<1600000 900000>,
+				<1400000 900000>,
+				<1200000 900000>,
+				<1100000 900000>,
+				<1000000 900000>,
+				<900000  900000>,
+				<800000  900000>,
+				<700000  900000>,
+				<625000  900000>,
+				<400000  900000>;
+			cooling-min-level = <0>;
+			cooling-max-level = <11>;
+			#cooling-cells = <2>; /* min followed by max */
+		};
+	};
+
+};

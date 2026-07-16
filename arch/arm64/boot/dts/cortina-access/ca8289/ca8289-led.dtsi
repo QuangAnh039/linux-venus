@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * ca8289-led.dtsi - Device Tree Include file for Cortina Access CA8289 with
+ * LED controller.
+ *
+ */
+
+/ {
+	led_ctrl: led-controller@f4320144 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "cortina-access,leds";
+		reg = <0x0 0xf4320144 0x0 0x44>;
+
+		pinctrl-0 = <&led_ctrl_default>;
+		pinctrl-names = "default";
+		hw-blink-rate1 = <256>;
+		hw-blink-rate2 = <512>;
+
+		led0: led0@0 {
+			reg = <0x0>;
+			default-state = "disabled";
+			port = <1>;
+			linux,default-trigger = "ca_phy1";
+			on,sw;
+		};
+		led1: led1@1 {
+			reg = <0x1>;
+		};
+		led2: led2@2 {
+			reg = <0x2>;
+		};
+		led3: led3@3 {
+			reg = <0x3>;
+		};
+		led4: led4@4 {
+			reg = <0x4>;
+		};
+		led5: led5@5 {
+			reg = <0x5>;
+		};
+		led6: led6@6 {
+			reg = <0x6>;
+		};
+		led7: led7@7 {
+			reg = <0x7>;
+		};
+		led8: led8@8 {
+			reg = <0x8>;
+		};
+		led9: led9@9 {
+			reg = <0x9>;
+		};
+		led10: led10@a {
+			reg = <0xa>;
+		};
+		led11: led11@b {
+			reg = <0xb>;
+		};
+		led12: led12@c {
+			reg = <0xc>;
+		};
+		led13: led13@d {
+			reg = <0xd>;
+		};
+		led14: led14@e {
+			reg = <0xe>;
+		};
+		led15: led15@f {
+			reg = <0xf>;
+		};
+	};
+};

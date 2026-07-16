@@ -1,0 +1,63 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * dts file for Cortina Access Mercury ENG Type-A V2 Board
+ *
+ * Copyright (C) 2025, Cortina Access Inc.
+ *
+ */
+
+/dts-v1/;
+#include "ca8299-engboard-A.dts"
+
+/ {
+	model = "Cortina Access CA-8299 ENG Type-A2 Board";
+	compatible = "cortina-access,mercury";
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	cpus {
+		cpu0: cpu@0 {
+			/* Regulator for CPU VDD */
+			cpu-supply = <&vdd_regulator>;
+			clock-latency = <100000>;
+			operating-points =
+				<2000000 900000>,
+				<1800000 900000>,
+				<1600000 900000>,
+				<1400000 890000>,
+				<1200000 880000>,
+				<1100000 870000>,
+				<1000000 860000>,
+				< 900000 850000>,
+				< 800000 840000>,
+				< 700000 830000>,
+				< 625000 820000>,
+				< 400000 810000>;
+			cooling-min-level = <0>;
+			cooling-max-level = <11>;
+			#cooling-cells = <2>; /* min followed by max */
+		};
+	};
+};
+
+&i2c0 {
+	clock-frequency = <100000>;
+	timeout = <1000>;
+	retries = <3>;
+
+	vdd_regulator: tps56520@37 {
+		compatible = "ti,tps56520";
+		reg = <0x37>;
+
+		/* ti,external-vdd-mode; */
+		ti,default-uV = <900000>;
+
+		regulator-name = "vdd-cpu";
+		regulator-min-microvolt = <800000>;
+		regulator-max-microvolt = <990000>;
+		regulator-ramp-delay = <300000>; /* 300ms */
+		regulator-enable-ramp-delay = <300000>; /* 300ms */
+		regulator-boot-on;
+		regulator-always-on;
+	};
+};

@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: GPL-2.0
+
+/ {
+	voip_ipc@0x2700000 {
+		compatible = "cortina-access,voip_ipc";
+	};
+};
+
+&audio {
+	compatible = "realtek,rtl_v2-audio";
+};
+
+&spi0 {
+	/* GPIO_ACTIVE_LOW is meaningless, it is decided by spidev mode & SPI_CS_HIGH */
+	//cs-gpios = <&gpio2 3 GPIO_ACTIVE_LOW>;
+
+	slic_spi0: slic_spi0@0 {
+		compatible = "realtek,support-slic";
+		status = "okay";
+		spi-max-frequency = <2500000>;
+		reg = <0>;
+		reset-gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+	};
+};

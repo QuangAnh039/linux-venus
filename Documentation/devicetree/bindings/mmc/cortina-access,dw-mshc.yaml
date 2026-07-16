@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/mmc/cortina-access,dw-mshc.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title:
+  Cortina-Access SoC specific extensions to the Synopsys Designware Mobile
+  Storage Host Controller
+
+maintainers:
+  - Jway Lin<jway.lin@cortina-access.com>
+
+properties:
+  compatible:
+    enum:
+      - cortina-access,dw-mshc
+
+  reg:
+    maxItems: 1
+
+  interrupts:
+    maxItems: 1
+
+  clocks:
+    maxItems: 2
+    description:
+      Handle to "biu" and "ciu" clocks for the
+      bus interface unit clock and the card interface unit clock.
+
+  clock-names:
+    items:
+      - const: biu
+      - const: ciu
+
+required:
+  - compatible
+  - reg
+  - interrupts
+  - clocks
+  - clock-names
+
+examples:
+  - |
+    #include <dt-bindings/clock/exynos5420.h>
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
+	mmc0: mmc@f4400000 {
+		compatible = "cortina-access,dw-mshc";
+		#address-cells= <1>;
+		#size-cells = <0>;
+		reg = <0 0xf4400000 0 0x1000>;
+
+		g_io_drv_ctrl = <0xf432007c>;
+		interrupt-parent = <&gic>;
+		interrupts = <0 43 4>;
+		clocks = <&div_sd_clk>, <&div_sd_clk>, <&mmc_drv_clk>, <&mmc_smpl_clk>;
+		clock-names = "ciu","biu","sd-drv","sd-smpl";
+
+		fifo-depth = <128>;
+		fifo-watermark-aligned;
+		card-detect-delay = <200>;
+		bus-width = <4>;
+		cap-mmc-highspeed;
+		cap-sd-highspeed;
+		//iommus = <&sd_atu>;
+	};

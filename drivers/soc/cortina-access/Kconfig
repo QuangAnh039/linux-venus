@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: GPL-2.0-only
+
+config ARCH_CA_PLL_S2IDLE
+	tristate "CA PLL s2idle ops support"
+	depends on SUSPEND
+	help
+	  This option enables support for the s2idle
+	  ops sacling the pll clock rate during
+	  s2idle suspend/resume flow.
+
+	  Enable the option to reduce the pll clock
+	  rate in the s2idle mode.

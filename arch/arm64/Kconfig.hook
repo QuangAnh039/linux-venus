@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-2.0
+
+config CA_KERNEL_HOOK
+	bool "Cortina-Access Kernel Hook Support"
+	depends on ARCH_CORTINA_ACCESS
+	select NETFILTER
+	default n
+	help
+	  This enables kernel-hook support for NI driver hardware
+	  acceleration.
+
+	  If you would like to have NI driver hardware acceleration support,
+	  say 'Y'.
+

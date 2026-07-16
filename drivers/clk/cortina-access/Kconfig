@@ -1,0 +1,16 @@
+config COMMON_CLK_CA8299
+	bool "Cortina Access CA8299 (Mercury) Clock Driver"
+	depends on ARCH_CA_MERCURY
+	select COMMON_CLK_CORTINA_ACCESS
+	help
+	  The driver supports Cortina Access CA8299 clock driver based on the
+	  common clock framework.
+	  This is essetnail driver.
+   	  Say Y to power up Cortina Access SOCs without doubts.
+
+config COMMON_CLK_CA8289
+	bool "Cortina-Access CA8289 (Venus) Clock Driver"
+	depends on ARCH_CA_VENUS
+	help
+	  Build the Cortina-Access CA8289 clock driver based on the common
+	  clock framework.

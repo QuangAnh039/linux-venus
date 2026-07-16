@@ -1,0 +1,111 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2024 Cortina-Access
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/phy/cortina-access,ca8289-u3phy.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: Cortina-Access SoC USB3 PHY
+
+maintainers:
+  - Pengpeng Chen <pengpeng.chen@cortina-access.com>
+
+properties:
+  compatible:
+    const: cortina-access,ca8289-u3phy
+
+  reg:
+    items:
+      - description: PHY host control registers
+      - description: PHY S2 serdes registers
+      - description: PHY S3 serdes registers
+
+  reg-names:
+    items:
+      - const: u3host_reg
+      - const: s2_u3port0
+      - const: s3_u3port1
+
+  resets:
+    items:
+      - description: USB S2 serdes reset
+      - description: USB S3 serdes reset
+
+  reset-names:
+    items:
+      - const: s2u3_dphy_reset
+      - const: s3u3_dphy_reset
+
+  phys:
+    minItems: 1
+    maxItems: 2
+
+  phy-names:
+    minItems: 1
+    maxItems: 2
+
+  portmask:
+    const: 3
+
+  phy_data_size:
+    const: 17
+
+  phy_data_addr:
+    const: 17
+
+  phy_data_array:
+    const: 17
+
+  status:
+    items:
+      - const: disabled
+
+required:
+  - compatible
+  - reg
+  - reg-names
+  - resets
+  - reset-names
+  - phys
+  - phy-names
+  - portmask
+  - phy_data_size
+  - phy_data_addr
+  - phy_data_array
+  - status
+
+additionalProperties: false
+
+examples:
+  - |
+    u3phy: usb3phy@f432b000 {
+        compatible = "cortina-access,ca8289-u3phy";
+        reg = <0x0 0xf432b000 0x0 0x28>,
+              <0x0 0xf4337000 0x0 0x1000>,
+              <0x0 0xf4338000 0x0 0x1000>;
+        reg-names = "u3host_reg",
+                    "s2_u3port0",
+                    "s3_u3port1";
+        #address-cells = <2>;
+        #size-cells = <2>;
+        ranges;
+        resets = <&dphy_rst PHY_S2_USB_RESET>,
+                 <&dphy_rst PHY_S3_USB_RESET>;
+        reset-names = "s2u3_dphy_reset",
+                      "s3u3_dphy_reset";
+        phys = <&s2_usb_phy>,
+               <&s3_usb_phy>;
+        phy-names = "s2u3-phy",
+                    "s3u3-phy";
+        portmask = <0x3>; # 0x1 -- Enable S2/usb3 port0 only
+                          # 0x2 -- Enable S3/usb3 port1 only
+                          # 0x3 -- Enable S2 and S3 both all
+        phy_data_size = <17>;
+        phy_data_addr = /bits/ 8
+                <0x01 0x26 0x2f 0x0a 0x06 0x23 0x20 0x21
+                 0x22 0x27 0x08 0x0b 0x0e 0x0c 0x09 0x09 0x09>;
+        phy_data_array = /bits/ 16
+                <0xAC46 0x840E 0x8648 0xC608 0x000c 0xCB66 0x7069 0x68AA
+                 0x0013 0x0266 0x3011 0xB905 0x1000 0xC008 0x524C 0x504C 0x524C>;
+        status = "disabled";
+    };

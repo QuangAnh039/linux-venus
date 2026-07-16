@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/watchdog/cortina-access,ca-efuse.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: OTP driver for Cortina-Access platform, Inc.
+
+maintainers:
+  - Jason Li <jason.li@cortina-access.com>
+
+description:
+  This hardware watchdog is present on Cortina-Access platform.
+
+properties:
+  compatible:
+    enum:
+      - cortina-access,ca-efuse

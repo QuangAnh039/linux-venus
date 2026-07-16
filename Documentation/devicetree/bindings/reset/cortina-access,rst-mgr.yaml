@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/iommu/cortina-access,rst-mgr.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: Cortina Access SoC reset controller Bindings
+
+properties:
+  compatible:
+    const: cortina-access,rst-mgr
+
+  reg:
+    minItems: 1
+    maxItems: 1
+
+  reg-names:
+    const: block_reset
+
+
+Example:
+
+    block_rst: reset-controller@f4320074 {
+	    compatible = "cortina-access,rst-mgr";
+	    reg = <0x0 0xf4320074 0x0 0x04>;
+	    reg-names = "block_reset";
+	    #reset-cells = <1>;
+    };

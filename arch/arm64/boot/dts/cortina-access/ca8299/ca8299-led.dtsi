@@ -1,0 +1,214 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * ca8299-led.dtsi - Device Tree Include file for Cortina Access CA8299 with
+ * LED controller.
+ *
+ */
+
+/ {
+	led_ctrl: led-controller@f4320218 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "cortina-access,leds";
+		reg = <0x0 0xf4320218 0x0 0x54>;
+
+		pinctrl-0 = <&led_ctrl_default &pled7_default
+			     &pled15_default>;
+		pinctrl-names = "default";
+		hw-blink-rate1 = <256>;
+		hw-blink-rate2 = <512>;
+
+		led0: led0@0 {
+			reg = <0x0>;
+			default-state = "disabled";
+			port = <1>;
+			linux,default-trigger = "ca_phy1";
+			on,sw;
+		};
+		led1: led1@1 {
+			reg = <0x1>;
+		};
+		led2: led2@2 {
+			reg = <0x2>;
+		};
+		led3: led3@3 {
+			reg = <0x3>;
+			on,sw;
+		};
+		led4: led4@4 {
+			reg = <0x4>;
+			on,sw;
+		};
+		led5: led5@5 {
+			reg = <0x5>;
+			on,sw;
+		};
+		led6: led6@6 {
+			reg = <0x6>;
+		};
+		led7: led7@7 {
+			reg = <0x7>;
+			on,sw;
+		};
+		led8: led8@8 {
+			reg = <0x8>;
+		};
+		led9: led9@9 {
+			reg = <0x9>;
+		};
+		led10: led10@a {
+			reg = <0xa>;
+		};
+		led11: led11@b {
+			reg = <0xb>;
+		};
+		led12: led12@c {
+			reg = <0xc>;
+		};
+		led13: led13@d {
+			reg = <0xd>;
+		};
+		led14: led14@e {
+			reg = <0xe>;
+		};
+		led15: led15@f {
+			reg = <0xf>;
+		};
+		led16: led16@10 {
+			reg = <0x10>;
+		};
+		led17: led17@11 {
+			reg = <0x11>;
+		};
+		led18: led18@12 {
+			reg = <0x12>;
+		};
+		led19: led19@13 {
+			reg = <0x13>;
+		};
+	};
+};
+
+&pinctrl {
+		/* Parallel LED */
+		pled0_default: pled0_active {
+			data_signals {
+				pins = "GPIO_000","PMUX_100";
+				function = "multi-fn";
+			};
+		};
+		pled1_default: pled1_active {
+			data_signals {
+				pins = "GPIO_001","PMUX_101";
+				function = "multi-fn";
+			};
+		};
+		pled2_default: pled2_active {
+			data_signals {
+				pins = "GPIO_002","PMUX_102";
+				function = "multi-fn";
+			};
+		};
+		pled3_default: pled3_active {
+			data_signals {
+				pins = "GPIO_003","PMUX_103";
+				function = "multi-fn";
+			};
+		};
+		pled4_default: pled4_active {
+			data_signals {
+				pins = "GPIO_004","PMUX_104";
+				function = "multi-fn";
+			};
+		};
+		pled5_default: pled5_active {
+			data_signals {
+				pins = "GPIO_005","PMUX_105";
+				function = "multi-fn";
+			};
+		};
+		pled6_default: pled6_active {
+			data_signals {
+				pins = "GPIO_006","PMUX_106";
+				function = "multi-fn";
+			};
+		};
+		pled7_default: pled7_active {
+			data_signals {
+				pins = "GPIO_007","PMUX_107";
+				function = "multi-fn";
+			};
+		};
+		pled8_default: pled8_active {
+			data_signals {
+				pins = "GPIO_008","PMUX_108";
+				function = "multi-fn";
+			};
+		};
+		pled9_default: pled9_active {
+			data_signals {
+				pins = "GPIO_009","PMUX_109";
+				function = "multi-fn";
+			};
+		};
+		pled10_default: pled10_active {
+			data_signals {
+				pins = "GPIO_010","PMUX_110";
+				function = "multi-fn";
+			};
+		};
+		pled11_default: pled11_active {
+			data_signals {
+				pins = "GPIO_011","PMUX_111";
+				function = "multi-fn";
+			};
+		};
+		pled12_default: pled12_active {
+			data_signals {
+				pins = "GPIO_012","PMUX_112";
+				function = "multi-fn";
+			};
+		};
+		pled13_default: pled13_active {
+			data_signals {
+				pins = "GPIO_013","PMUX_113";
+				function = "multi-fn";
+			};
+		};
+		pled14_default: pled14_active {
+			data_signals {
+				pins = "GPIO_014","PMUX_114";
+				function = "multi-fn";
+			};
+		};
+		pled15_default: pled15_active {
+			data_signals {
+				pins = "GPIO_015","PMUX_115";
+				function = "multi-fn";
+			};
+		};
+		pled16_default: pled16_active {
+			data_signals {
+				pins = "GPIO_212","PMUX_116";
+				function = "multi-fn";
+			};
+		};
+		pled17_default: pled17_active {
+			data_signals {
+				pins = "GPIO_213","PMUX_117";
+				function = "multi-fn";
+			};
+		};
+		pled18_default: pled18_active {
+			data_signals {
+				pins = "GPIO_214","PMUX_118";
+				function = "multi-fn";
+			};
+		};
+		pled19_default: pled19_active {
+			data_signals {
+				pins = "GPIO_215","PMUX_119";
+				function = "multi-fn";
+			};
+		};
+};

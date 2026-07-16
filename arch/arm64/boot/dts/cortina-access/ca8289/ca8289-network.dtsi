@@ -1,0 +1,449 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * dts file for Cortina Access CA8277s SoC
+ *
+ * Copyright (C) 2018, Cortina Access
+ */
+
+#include <dt-bindings/soc/ca8277_irqs.h>
+#include <dt-bindings/interrupt-controller/arm-gic.h>
+#include <dt-bindings/interrupt-controller/irq.h>
+#include <dt-bindings/reset/cortina-access,venus-rst.h>
+#include <dt-bindings/phy/phy-ca8289.h>
+#include <dt-bindings/gpio/gpio.h>
+
+#define CA_NE_DDR_COHERENT_BASE 0x05000000
+#define CA_NE_DDR_COHERENT_SIZE 0x600000
+#define CA_NE_DDR_NONCACHE_BASE 0x05600000
+#define CA_NE_DDR_NONCACHE_SIZE 0x30C0000
+#define CA_FAST_REGISTER_PORT   0x00000004
+
+/ {
+
+	/* Reserver memory region for Hash/FBM/NE and etc.
+	 * Fixme when NE team finalize size and offset
+	 */
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		ddr_cache_reserved: ddr_cache_buffer@5000000 {
+			/* reserved memory area in DDR $-coherent */
+			reg = <0x00000000 CA_NE_DDR_COHERENT_BASE 0x0 CA_NE_DDR_COHERENT_SIZE>;
+		};
+
+		ddr_noncache_reserved: ddr_noncache_buffer@5600000 {
+			/* reserved memory area in DDR non-$cable */
+			reg = <0x00000000 CA_NE_DDR_NONCACHE_BASE 0x0 CA_NE_DDR_NONCACHE_SIZE>;
+		};
+	};
+
+		/* DMA LSO interrupts */
+	dma_lso_ictl: dma_lso_ictl@f7001e00 {
+				compatible = "cortina-access,per-ictl";
+				reg = <0x0 0xf7001e00 0x0 0x08>;
+				interrupt-controller;
+				#interrupt-cells = <1>;
+				interrupt-parent = <&gic>;
+				interrupts = <GIC_SPI IRQ_GLB_DMA_LSO_0 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	/* NE interrupts */
+	ne_ictl: ne_ictl@f43200e4  {
+				compatible = "cortina-access,per-ictl";
+				reg = <0x0 0xf43200e4  0x0 0x8>;
+				interrupt-controller;
+				#interrupt-cells = <1>;
+				interrupt-parent = <&gic>;
+				interrupts = <GIC_SPI IRQ_GLB_NE IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	/* NI interrupt for NI port PTP timestamp event */
+	ni_hv_ictl: ni_hv_ictl@f430439c {
+		    compatible = "cortina-access,per-ictl";
+		    reg = <0x00000000 0xf430439c 0x0 0x8>;
+		    interrupt-controller;
+		    #interrupt-cells = <1>;
+		    interrupt-parent = <&ne_ictl>;
+		    interrupts = <0>;
+	};
+
+	/* NI interrupt for GE port event */
+	ni_hv_port0_ictl: ni_hv_port0_ictl@f43042cc {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x00000000 0xf43042cc 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ne_ictl>;
+		interrupts = <0>;
+	};
+
+	ni_hv_port1_ictl: ni_hv_port1_ictl@f43042d4 {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x00000000 0xf43042d4 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ne_ictl>;
+		interrupts = <0>;
+	};
+
+	ni_hv_port2_ictl: ni_hv_port2_ictl@f43042dc {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x00000000 0xf43042dc 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ne_ictl>;
+		interrupts = <0>;
+	};
+
+	ni_hv_port3_ictl: ni_hv_port3_ictl@f43042e4 {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x00000000 0xf43042e4 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ne_ictl>;
+		interrupts = <0>;
+	};
+
+	ni_hv_port4_ictl: ni_hv_port4_ictl@f43042ec {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x00000000 0xf43042ec 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ne_ictl>;
+		interrupts = <0>;
+	};
+
+	ni_hv_port6_ictl: ni_hv_port6_ictl@f43042fc {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x00000000 0xf43042fc 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ne_ictl>;
+		interrupts = <0>;
+	};
+
+	ni_hv_xge_mac_ictl: ni_hv_xge_mac_ictl@f4305250 {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x00000000 0xf4305250 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ni_hv_ictl>;
+		interrupts = <0>;
+	};
+
+	pon_ictl: pon_ictl@f4320100 {
+		compatible = "cortina-access,per-ictl";
+		reg = <0x0 0xf4320100 0x0 0x8>;
+		interrupt-controller;
+		#interrupt-cells = <1>;
+		interrupt-parent = <&ne_ictl>;
+		interrupts = <5>;
+	};
+
+	/* pon Reset */
+	pon_rst: reset-controller@f4320024 {
+		compatible = "cortina-access,rst-mgr";
+		reg = <0x0 0xf4320024 0x0 0x04>;
+		#reset-cells = <1>;
+	};
+
+	#define PE_LOAD_SIZE 0x100
+	#define POOL_SRAM_BASE 0x8100
+	#define POOL_SRAM_SIZE 0x33f00
+	#define SCR_SRAM_BASE 0x3C000
+	#define SCR_SRAM_SIZE 0x4000
+
+	sram@80000000 {
+		compatible = "mmio-sram";
+		#address-cells = <2>;
+		#size-cells = <2>;
+		reg = <0x0 0x80000000 0x0 0x40000>;
+		no-memory-wc;
+
+		ranges = <0x0 0x0 0x0 0x80000000 0x0 0x40000>;
+
+		pe-load@0 {
+			reg = <0x0 0x0 0x0 PE_LOAD_SIZE>;
+			pool;
+			export;
+		};
+
+		pool-sram@1000 {
+			reg = <0x0 POOL_SRAM_BASE 0x0 POOL_SRAM_SIZE>;
+			pool;
+			export;
+		};
+
+		secured-sram@3C000 {
+			reg = <0x0 SCR_SRAM_BASE 0x0 SCR_SRAM_SIZE>;
+			pool;
+			export;
+		};
+	};
+
+	ethernet@f4300000 {
+		compatible = "cortina-access,ni";
+
+		rtl8221_reset-gpio = <&gpio4 0 GPIO_ACTIVE_LOW>;
+
+		reg = <CA_FAST_REGISTER_PORT 0xf4300000 0x0 0x10000>,   /* HV NE(APB0)*/
+		      <CA_FAST_REGISTER_PORT 0xf43200e4 0x0 0x10>,      /* GLB Net Eng. Int. */
+		      <CA_FAST_REGISTER_PORT 0xf4329118 0x0 0x48>,      /* MDIO */
+		      <CA_FAST_REGISTER_PORT 0xf4500000 0x0 0x2000>,    /* XRAM */
+		      <CA_FAST_REGISTER_PORT 0xf7001000 0x0 0x1000>,    /* DMA LSO to DMA AFT */
+		      <0x00000000 CA_NE_DDR_COHERENT_BASE 0x0 CA_NE_DDR_COHERENT_SIZE>,/* DDR $ */
+		      <0x00000001 CA_NE_DDR_NONCACHE_BASE 0x0 CA_NE_DDR_NONCACHE_SIZE>,/* DDR n$ */
+		      <CA_FAST_REGISTER_PORT 0xf5500000 0x0 0xc000>,    /* PON */
+		      <CA_FAST_REGISTER_PORT 0xf4320000 0x0 0x300>,     /* PON GLB*/
+		      <CA_FAST_REGISTER_PORT 0xf432d000 0x0 0x20b8>,    /* axi reoder*/
+		      <CA_FAST_REGISTER_PORT 0xf4339000 0x0 0x1000>,    /* internal RTL8211 PHY */
+		      <CA_FAST_REGISTER_PORT 0xf550c000 0x0 0x1000>,    /* XFI */
+		      <CA_FAST_REGISTER_PORT 0xf433a000 0x0 0x2000>,    /* SGMII_LP_REG_BASE */
+		      <CA_FAST_REGISTER_PORT 0xf550d000 0x0 0x100>,
+		      <CA_FAST_REGISTER_PORT 0xf4333000 0x0 0x2000>,
+		      <0x0 0x90500000 0x0 0x200000>; /* Crpyo Engine */
+
+		reg-names = "ni_hv", "glb_network", "mdio_cfg", "xram",
+			    "dma_lso", "ddr_cache", "ddr_noncache", "pon",
+			    "pon_glb", "qm_axi_reorder", "internal_phy",
+			    "xfi", "sgmii", "qx", "rxaui", "crypto_spacc";
+
+		interrupt-parent=<&gic>;
+		interrupts=<GIC_SPI IRQ_GLB_QM_CPU_FIFO0_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_FIFO1_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_FIFO2_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_FIFO3_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_FIFO4_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_FIFO5_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_FIFO6_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_FIFO7_REQ IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_REFILL_REQ_8 IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_REFILL_REQ_9 IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_EPP_256_FIFO_REQ_HI IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_EPP_256_FIFO_REQ_LO IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_REFILL_REQ_4 IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_REFILL_REQ_5 IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_REFILL_REQ_6 IRQ_TYPE_LEVEL_HIGH>,
+			   <GIC_SPI IRQ_GLB_QM_CPU_REFILL_REQ_7 IRQ_TYPE_LEVEL_HIGH>;
+
+		//phys = <&s3_sgmii_phy>;
+		//phy-names = "sgmii-phy";
+
+		nvmem-cells = <&phy_param>, <&phy_calibration>;
+		nvmem-cell-names = "param", "calibration";
+
+		resets = <&block_rst NI_RESET>, <&block_rst L2FE_RESET>, <&block_rst L2TM_RESET>,
+			<&block_rst L3FE_RESET>, <&block_rst SDRAM_RESET>, <&block_rst TQM_RESET>,
+			<&block_rst QXGMII_RESET>, <&dphy_rst PHY_SDSIF_RESET>,
+			<&dphy_rst PHY_SGMII_RESET>, <&dphy_rst PHY_S3_SGMII_RESET>,
+			<&block_rst PTP_TIMER_RESET>, <&pon_rst PTP_RESET>;
+
+		reset-names = "ni_reset", "l2fe_reset", "l2tm_reset", "l3fe_reset", "sdram_reset",
+				"tqm_reset", "qxgmii_reset", "phy_sdsif_reset", "phy_sgmii_reset",
+				"phy_s3_sgmii_reset", "ptp_timer_reset", "ptp_reset";
+
+		memory-region = <&ddr_cache_reserved>, <&ddr_noncache_reserved>;
+
+		eth0: ethernet0 {
+			local-mac-address = [ 00 00 00 00 00 00 ];
+		};
+
+		eth1: ethernet1 {
+			local-mac-address = [ 00 00 00 00 00 00 ];
+		};
+
+		pon_mac: pon_mac {
+			interrupt-parent = <&pon_ictl>;
+			interrupts = <0>;
+			interrupt-names = "PON_MAC_INT";
+		};
+
+		pon_cntl: pon_cntl {
+			interrupt-parent = <&pon_ictl>;
+			interrupts = <1>;
+			interrupt-names = "PON_CNTL_INT";
+		};
+
+		dma_lso_vp00_int: dma_lso_vp00_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <0>;
+			interrupt-names = "DMA_LSO_VP00_INT";
+		};
+
+		dma_lso_vp01_int: dma_lso_vp01_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <1>;
+			interrupt-names = "DMA_LSO_VP01_INT";
+		};
+
+		dma_lso_vp02_int: dma_lso_vp02_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <2>;
+			interrupt-names = "DMA_LSO_VP02_INT";
+		};
+
+		dma_lso_vp03_int: dma_lso_vp03_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <3>;
+			interrupt-names = "DMA_LSO_VP03_INT";
+		};
+
+	       dma_lso_vp04_int: dma_lso_vp04_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <4>;
+			interrupt-names = "DMA_LSO_VP04_INT";
+		};
+
+		dma_lso_vp05_int: dma_lso_vp05_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <5>;
+			interrupt-names = "DMA_LSO_VP05_INT";
+		};
+
+		dma_lso_vp06_int: dma_lso_vp06_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <6>;
+			interrupt-names = "DMA_LSO_VP06_INT";
+		};
+
+		dma_lso_vp07_int: dma_lso_vp07_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <7>;
+			interrupt-names = "DMA_LSO_VP07_INT";
+		};
+
+		dma_lso_vp10_int: dma_lso_vp10_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <10>;
+			interrupt-names = "DMA_LSO_VP10_INT";
+		};
+
+		dma_lso_vp11_int: dma_lso_vp11_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <11>;
+			interrupt-names = "DMA_LSO_VP11_INT";
+		};
+
+		dma_lso_int: dma_lso_int {
+			interrupt-parent = <&dma_lso_ictl>;
+			interrupts = <12>;
+			interrupt-names = "DMA_LSO_INT";
+		};
+
+		/* PTP interrupt for PTP timer rollover */
+		ptp_stat_ictl: ptp_stat_ictl {
+			interrupt-parent = <&ni_hv_ictl>;
+			interrupts = <27>;
+		};
+
+		ptp_rollover: ptp_rollover {
+			interrupt-parent = <&pon_ictl>;
+			interrupts = <2>;
+		};
+
+		ni_opt_int: ni_opt_int {
+			interrupt-parent = <&pon_ictl>;
+			interrupts = <3>;
+		};
+
+		ni_psds_prbs: ni_psds_prbs {
+			interrupt-parent = <&pon_ictl>;
+			interrupts = <4>;
+		};
+
+		/* GPHY interrupts for NI ports */
+		ni_gphy: ni_gphy_ictl {
+			interrupt-parent = <&gic>;
+			interrupts = <GIC_SPI IRQ_GLB_GPHY_MAC_0 IRQ_TYPE_LEVEL_HIGH>,
+			    <GIC_SPI IRQ_GLB_GPHY_MAC_1 IRQ_TYPE_LEVEL_HIGH>,
+			    <GIC_SPI IRQ_GLB_GPHY_MAC_2 IRQ_TYPE_LEVEL_HIGH>,
+			    <GIC_SPI IRQ_GLB_GPHY_MAC_3 IRQ_TYPE_LEVEL_HIGH>;
+		};
+
+		ni_port0_rxoverflow: ni_port0_rxoverflow {
+			interrupt-parent = <&ni_hv_port0_ictl>;
+			interrupts = <3>;
+			interrupt-names = "PORT0 RX OVERFLOW";
+		};
+
+		ni_port0_txoverflow: ni_port0_txoverflow {
+			interrupt-parent = <&ni_hv_port0_ictl>;
+			interrupts = <2>;
+			interrupt-names = "PORT0 TX OVERFLOW";
+		};
+
+		ni_port1_rxoverflow: ni_port1_rxoverflow {
+			interrupt-parent = <&ni_hv_port1_ictl>;
+			interrupts = <3>;
+			interrupt-names = "PORT1 RX OVERFLOW";
+		};
+
+		ni_port1_txoverflow: ni_port1_txoverflow {
+			interrupt-parent = <&ni_hv_port1_ictl>;
+			interrupts = <2>;
+			interrupt-names = "PORT1 TX OVERFLOW";
+		};
+
+		ni_port2_rxoverflow: ni_port2_rxoverflow {
+			interrupt-parent = <&ni_hv_port2_ictl>;
+			interrupts = <3>;
+			interrupt-names = "PORT2 RX OVERFLOW";
+		};
+
+		ni_port2_txoverflow: ni_port2_txoverflow {
+			interrupt-parent = <&ni_hv_port2_ictl>;
+			interrupts = <2>;
+			interrupt-names = "PORT2 TX OVERFLOW";
+		};
+
+		ni_port3_rxoverflow: ni_port3_rxoverflow {
+			interrupt-parent = <&ni_hv_port3_ictl>;
+			interrupts = <3>;
+			interrupt-names = "PORT3 RX OVERFLOW";
+		};
+
+		ni_port3_txoverflow: ni_port3_txoverflow {
+			interrupt-parent = <&ni_hv_port3_ictl>;
+			interrupts = <2>;
+			interrupt-names = "PORT3 TX OVERFLOW";
+		};
+
+		ni_port4_rxoverflow: ni_port4_rxoverflow {
+			interrupt-parent = <&ni_hv_port4_ictl>;
+			interrupts = <3>;
+			interrupt-names = "PORT4 RX OVERFLOW";
+		};
+
+		ni_port4_txoverflow: ni_port4_txoverflow {
+			interrupt-parent = <&ni_hv_port4_ictl>;
+			interrupts = <2>;
+			interrupt-names = "PORT4 TX OVERFLOW";
+		};
+
+		ni_port6_rxoverflow: ni_port6_rxoverflow {
+			interrupt-parent = <&ni_hv_port6_ictl>;
+			interrupts = <3>;
+			interrupt-names = "PORT6 RX OVERFLOW";
+		};
+
+		ni_xge_txfifo_oflwl: ni_xge_txfifo_oflwl {
+			interrupt-parent = <&ni_hv_xge_mac_ictl>;
+			interrupts = <1>;
+			interrupt-names = "XGE MAC TXFIFO OFWL";
+		};
+
+		ni_sfi_int: ni_sfi_int {
+			interrupt-parent = <&ni_hv_ictl>;
+			interrupts = <22>;
+			interrupt-names = "SFI ITNT";
+		};
+
+		dying_gasp:dying_gasp{
+			interrupt-parent = <&per_ictl>;
+			interrupts = <24>;
+			interrupt-names = "DYING GASP";
+		};
+	};
+};

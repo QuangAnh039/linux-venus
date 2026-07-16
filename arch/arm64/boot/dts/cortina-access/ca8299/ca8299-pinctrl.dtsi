@@ -1,0 +1,157 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * Copyright (C) 2024, Cortina Access Inc.
+ *
+ * ca8299-pinctl.dtsi - Device Tree Include file for CA8299
+ * pin controller.
+ */
+
+/ {
+	pinctrl: pinctrl@f432014c  {
+		compatible = "cortina-access,ca8299-pinctrl";
+		reg = <0x0 0xf432014c 0x0 0x2c>;
+
+		uart0_hw_fc: uart0_active {
+			data_signals {
+				pins = "PMUX_003";
+				function = "multi-fn";
+			};
+		};
+		uart2_default: uart2_active {
+			data_signals {
+				pins = "GPIO_000", "GPIO_001", "PMUX_004";
+				function = "multi-fn";
+			};
+		};
+		uart3_default: uart3_active {
+			data_signals {
+				pins = "GPIO_002", "GPIO_003", "PMUX_005";
+				function = "multi-fn";
+			};
+		};
+		spi_cs1: spi_cs1 {
+			data_signals {
+				pins = "GPIO_004", "PMUX_007";
+				function = "multi-fn";
+			};
+		};
+		spi_cs2: spi_cs2 {
+			data_signals {
+				pins = "GPIO_005", "PMUX_008";
+				function = "multi-fn";
+			};
+		};
+		spi_cs3: spi_cs3 {
+			data_signals {
+				pins = "GPIO_006", "PMUX_009";
+				function = "multi-fn";
+			};
+		};
+		spi_cs4: spi_cs4 {
+			data_signals {
+				pins = "GPIO_007", "PMUX_010";
+				function = "multi-fn";
+			};
+		};
+		spi_cs5: spi_cs5 {
+			data_signals {
+				pins = "GPIO_007", "PMUX_011";
+				function = "multi-fn";
+			};
+		};
+		spi_cs6: spi_cs6 {
+			data_signals {
+				pins = "GPIO_302", "PMUX_012";
+				function = "multi-fn";
+			};
+		};
+		spi_cs7: spi_cs7 {
+			data_signals {
+				pins = "GPIO_301", "PMUX_013";
+				function = "multi-fn";
+			};
+		};
+		pwm_nf: pwm_nf {
+			data_signals {
+				pins = "PMUX_014";
+				function = "multi-fn";
+			};
+		};
+		pwm_sf: pwm_sf {
+			data_signals {
+				pins = "GPIO_114", "PMUX_015";
+				function = "multi-fn";
+			};
+		};
+
+		led_ctrl_default: led_ctrl_active {
+			data_signals {
+				pins = "GPIO_011", "GPIO_012", "PMUX_017";
+				function = "multi-fn";
+			};
+		};
+
+		/* PIN_MUX_NEW */
+		uart3_hw_fc: uart3_hw_fc {
+			data_signals {
+				pins = "GPIO_008", "GPIO_009", "PMUX_200";
+				function = "multi-fn";
+			};
+		};
+		uart2_hw_fc: uart2_hw_fc {
+			data_signals {
+				pins = "GPIO_406", "GPIO_407", "PMUX_201";
+				function = "multi-fn";
+			};
+		};
+		uart1_default: uart1_active {
+			data_signals {
+				pins = "GPIO_406", "GPIO_407", "PMUX_202";
+				function = "multi-fn";
+			};
+		};
+
+		ssp_default: ssp_active {
+			data_signals {
+				pins = "PMUX_204";
+				function = "multi-fn";
+			};
+		};
+		opt_default: opt_active {
+			data_signals {
+				pins = "GPIO_013", "GPIO_014", "GPIO_015", "PMUX_208";
+				function = "multi-fn";
+			};
+		};
+		mmc_default: mmc_active {
+			data_signals {
+				pins = "PMUX_210";
+				function = "multi-fn";
+			};
+		};
+		mdio_default: mdio_active {
+			data_signals {
+				pins = "PMUX_211";
+				function = "multi-fn";
+			};
+		};
+		pnand_default: pnand_active {
+			data_signals {
+				pins = "PMUX_216";
+				function = "multi-fn";
+			};
+		};
+		biw1_default: biw1_active {
+			data_signals {
+				pins = "PMUX_218";
+				function = "multi-fn";
+			};
+		};
+		biw0_default: biw0_active {
+			data_signals {
+				pins = "PMUX_221";
+				function = "multi-fn";
+			};
+		};
+	};
+};

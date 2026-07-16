@@ -1,0 +1,144 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2024 Cortina-Access
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/phy/cortina,ca8299-u3phy.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: Cortina-Access CA8299 SoC USB3 PHY
+
+maintainers:
+  - Pengpeng Chen <pengpeng.chen@cortina-access.com>
+
+properties:
+  compatible:
+    const: cortina-access,ca8299-u3phy
+
+  reg:
+    items:
+      - description: PHY host control registers
+      - description: PHY S2 serdes registers
+      - description: PHY S6 serdes registers
+      - description: PHY S8 serdes registers
+
+  reg-names:
+    items:
+      - const: u3host_reg
+      - const: port0_reg
+      - const: port1_reg
+      - const: port2_reg
+
+  resets:
+    items:
+      - description: USB S2 serdes reset
+      - description: USB S6 serdes reset
+      - description: USB S8 serdes reset
+
+  reset-names:
+    items:
+      - const: u3s2_reset
+      - const: u3s6_reset
+      - const: u3s8_reset
+
+  phys:
+    minItems: 1
+    maxItems: 2
+
+  phy-names:
+    minItems: 1
+    maxItems: 2
+
+  portmask:
+    const: 2
+
+  u2phy_data_size:
+    const: 10
+
+  u2phy_data_addr:
+    const: 10
+
+  u2phy_data_array:
+    const: 10
+
+  u3phy_data_size:
+    const: 17
+
+  u3phy_data_addr:
+    const: 17
+
+  u3phy_data_array:
+    const: 17
+
+  status:
+    items:
+      - const: disabled
+
+required:
+  - compatible
+  - reg
+  - reg-names
+  - resets
+  - reset-names
+  - phys
+  - phy-names
+  - portmask
+  - u2phy_data_size
+  - u2phy_data_addr
+  - u2phy_data_array
+  - u3phy_data_size
+  - u3phy_data_addr
+  - u3phy_data_array
+  - status
+
+additionalProperties: false
+
+examples:
+  - |
+    u3phy: usbphy@f432b000 {
+        compatible = "cortina-access,ca8299-u3phy";
+        reg = <0x0 0xf432b000 0x0 0x184>,
+              <0x0 0xf4720000 0x0 0x8000>,
+              <0x0 0xf4730000 0x0 0x8000>,
+              <0x0 0xf4331000 0x0 0x8000>;
+        reg-names = "u3host_reg", "u3s2_port0", "u3s6_port1", "u3s8_port2";
+        ranges;
+        resets = <&block_rst1 USB_S2_RESET>,
+            <&block_rst1 USB_S6_RESET>,
+            <&block_rst1 USB_S8_RESET>;
+        reset-names ="u3s2_reset", "u3s6_reset", "u3s8_reset";
+        phys = <&s2_usb_phy>, <&s6_usb_phy>, <&s8_usb_phy>;
+        phy-names = "u3s2_phy", "u3s6_phy", "u3s8_phy";
+
+        /*
+         * 0x1 -- Enable U2port0/u3 S2
+         * 0x2 -- Enable U2port1/u3 S6 (default)
+         * 0x4 -- Enable U2port2/u3 S8
+         */
+        u2portmask = <0x2>;
+        u3portmask = <0x2>;
+
+        u2phy_data_size = <2>;
+        u2phy_data_addr = /bits/ 8
+            <0xE0 0xF4>;
+        u2phy_data_array = /bits/ 8
+            <0xEA 0x00>;
+
+        u3phy_data_size = <64>;
+        u3phy_data_addr = /bits/ 16
+            <0x7100 0x46B0 0x4770 0x7030 0x0564 0x06A4 0x058C 0x06CC 0x0590 0x06D0
+             0x0594 0x06D4 0x0598 0x06D8 0x05B0 0x06F0 0x0654 0x0794 0x0670 0x07B0
+             0x46C0 0x4780 0x46C8 0x4788 0x7D48 0x7D88 0x7D60 0x7DA0 0x7D68 0x7DA8
+             0x7D70 0x7DB0 0x7D78 0x7DB8 0x7D68 0x7DA8 0x0658 0x0658 0x0798 0x0798
+             0x6320 0x6360 0x6330 0x6370 0x64C0 0x6500 0x64D8 0x6518 0x64D0 0x64C8
+             0x6510 0x6508 0x64E8 0x64E0 0x6528 0x6520 0x6300 0x6300 0x6300 0x6340
+             0x6340 0x6340 0x4650 0x4710>;
+        u3phy_data_array = /bits/ 16
+            <0x0001 0x0002 0x0002 0x3139 0x2500 0x2500 0x2002 0x2303 0x0168 0x0168
+             0x0110 0x0110 0x1821 0x1821 0x0260 0x0260 0x6842 0x6842 0x003B 0x003B
+             0xC1FC 0xC1FC 0xE87F 0xE87F 0x00C6 0x00C6 0x00C6 0x00C6 0x0080 0x0080
+             0x0280 0x0280 0x0280 0x0280 0x0020 0x0020 0x0260 0x0360 0x0260 0x0360
+             0x0949 0x0949 0x031A 0x031A 0x00C5 0x00C5 0x00C5 0x00C5 0x0001 0x999A
+             0x0001 0x999A 0x0008 0xCCCD 0x0008 0xCCCD 0x0001 0x0003 0x0001 0x0001
+             0x0003 0x0001 0x91C0 0x9100>;
+        status = "disabled";
+    };

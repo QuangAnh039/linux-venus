@@ -1,0 +1,65 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/clock/cortina-access,mercury-fixed-factor-clk.yaml#
+$schema: http://devicetree.org/meta-schemas/cortina-access-mercury-fixed-factor-clk.yaml#
+
+title: Cortina-Access Mercury platform Fixed Factor Clock Device Tree Bindings
+
+maintainers:
+  - Arthur <arthur.li@cortina-access.com>
+
+deprecated: true
+
+properties:
+  "#clock-cells":
+    const: 0
+
+  compatible:
+    enum:
+      - cortina-access,fixed-factor-clk
+  reg:
+    maxItems: 1
+
+  clocks:
+    minItems: 1
+    maxItems: 4
+    description: >
+      The parent order must match the hardware programming order.
+
+required:
+  - "#clock-cells"
+  - compatible
+  - clocks
+  - fixed-div
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,fixed-factor-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+examples:
+  - |
+    factor_peripheral_clk: factor_peripheral {
+        compatible = "cortina-access,fixed-factor-clk";
+        #clock-cells = <0>;
+        clocks = <&pll_epll_clk>;
+        fixed-div = <16>;
+    };
+  - |
+    factor_usb_suspend_clk: factor_usb_suspend {
+        compatible = "cortina-access,fixed-factor-clk";
+        #clock-cells = <0>;
+        clocks = <&pll_epll_clk>;
+        fixed-div = <200>;
+    };
+...

@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Generic thermal drivers configuration
+#
+
+config CA_THERMAL
+	tristate "Cortina-Access thermal driver"
+	depends on ARCH_CORTINA_ACCESS && THERMAL_OF
+	help
+	  Support for Temperature Monitor (TEMPMON) found on  Cortina-Access
+	  SoCs with system controller inside, Linux kernel has to communicate
+	  with system controller via MU (message unit) IPC to get temperature
+	  from thermal sensor. It supports one critical trip point and one
+	  passive trip point on thermal sensor.

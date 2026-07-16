@@ -1,0 +1,394 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * dts file for Cortina Access Venus FPGA Board
+ *
+ * Copyright (C) 2021, Cortina Access Inc.
+ *
+ */
+
+/dts-v1/;
+
+#include <dt-bindings/gpio/gpio.h>
+#include "./ca8289/ca8289-soc.dtsi"
+#include "ca-nand.dtsi"
+#include "ca8289/ca8289-led.dtsi"
+#include "ca8289-eng-voip.dts"
+#include "ca8289/ca8289-crypto.dtsi"
+
+/ {
+	model = "Cortina Access Venus ENG Board";
+	compatible = "cortina-access,venus";
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+	interrupt-parent = <&gic>;
+
+	memory { /* 512MB */
+		device_type = "memory";
+		reg = <0x00000000 0x00000000 0x0 0x0f000000>;
+	};
+
+};
+
+&i2c {
+	clock-frequency = <100000>;
+	timeout = <1000>;
+	retries = <3>;
+
+	i2c-switch@70 {
+		compatible = "nxp,pca9544";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		reg = <0x70>;
+		/* status = "disabled"; */
+		i2c_sw_ch0: i2c@0 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0>;
+		};
+
+		i2c_sw_ch1: i2c@1 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <1>;
+		};
+
+		i2c_sw_ch2: i2c@2 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <1>;
+		};
+
+		i2c_sw_ch3: i2c@3{
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <3>;
+
+			ina260@40 {
+				compatible = "ti,ina260";
+				reg = <0x40>;
+			};
+			ina260@41 {
+				compatible = "ti,ina260";
+				reg = <0x41>;
+			};
+			ina260@44 {
+				compatible = "ti,ina260";
+				reg = <0x44>;
+			};
+			ina260@45 {
+				compatible = "ti,ina260";
+				reg = <0x45>;
+			};
+		};
+	};
+
+	pgpio: pgpio@73 {
+		compatible = "nxp,pca9538";
+		#gpio-cells = <2>;
+		reg = <0x73>;
+		gpio-controller;
+		/* status = "disabled"; */
+	};
+
+	vdd_regulator: tps56921@37 {
+		compatible = "ti,tps56921";
+		reg = <0x37>;
+
+		/* ti,external-vdd-mode; */
+		ti,default-uV = <1000000>;
+
+		regulator-name = "vdd-cpu";
+		regulator-min-microvolt = <820000>;
+		regulator-max-microvolt = <1100000>;
+		regulator-ramp-delay = <300000>; /* 300ms */
+		regulator-enable-ramp-delay = <300000>; /* 300ms */
+		regulator-boot-on;
+		regulator-always-on;
+	};
+};
+
+&pcie0 {
+			status = "okay";
+
+			resets = <&block_rst PCI0_RESET>, <&dphy_rst PHY_S0_PCIE_RESET>;
+			reset-names = "core_reset", "phy_reset";
+			reset-gpios = <&pgpio 0 GPIO_ACTIVE_LOW>;
+			ready-time = /bits/ 16 <200>;
+
+			/* dma-coherent; */
+
+			serdes-cfg0 = /* S0_0 gen1 */
+						  <0xf4333068 0x00000000>,
+
+						  <0xf4333004 0x00001852>,
+						  <0xf4333008 0x00006042>,
+						  <0xf4333010 0x00008000>,
+						  <0xf4333014 0x0000062c>,
+						  <0xf4333018 0x0000001f>, /* Icp */
+						  <0xf4333028 0x0000d210>,
+						  /* #LEQ adapt, CMU Rs, Cp */
+						  <0xf433302c 0x0000b905>, /* #OOBS */
+						  <0xf4333030 0x0000c008>, /* #RX detect */
+						  <0xf4333034 0x0000f712>,
+						  <0xf4333038 0x00001000>, /* #TX_SEL_VCM */
+						  <0xf4333074 0x0000da1f>,
+						  <0xf4333080 0x0000d466>,
+						  <0xf4333084 0x000066aa>,
+						  <0xf4333088 0x00000013>,
+						  <0xf433308c 0x0000bb66>,
+						  <0xf4333090 0x00004f0c>,
+						  <0xf43330ac 0x0000b003>,
+						  <0xf43330b8 0x00000ffe>, /* CDR timer */
+
+						  /* S0_0 gen2 */
+						  <0xf4333168 0x00000000>,
+
+						  <0xf4333104 0x0000204a>,
+						  <0xf4333108 0x00006042>,
+						  <0xf4333110 0x00008000>,
+						  <0xf4333114 0x0000062c>,
+						  <0xf4333118 0x0000001f>, /* Icp */
+						  <0xf4333128 0x0000d210>,
+						  /* #LEQ adaption, CMU Rs, CP */
+						  <0xf433312c 0x0000b905>, /* #OOBS */
+						  <0xf4333130 0x0000c008>, /* #RX detect */
+						  <0xf4333134 0x0000f712>,
+						  <0xf4333138 0x00001000>, /* #TX_SEL_VCM */
+						  <0xf4333174 0x0000da1f>,
+						  <0xf4333178 0x0000e1e0>,
+						  <0xf4333184 0x000066aa>,
+						  <0xf4333188 0x00000013>,
+						  <0xf433318c 0x0000bb66>,
+						  <0xf4333190 0x00004f10>,
+						  <0xf43331ac 0x0000b003>,
+						  <0xf43331b8 0x0000fffe>, /* CDR timer */
+						  <0xf43331bc 0x00005100>;
+
+			serdes-cfg1 = /* S0_1 gen1 */
+						  <0xf4334068 0x00000000>,
+
+						  <0xf4334004 0x00001852>,
+						  <0xf4334008 0x00006042>,
+						  <0xf4334010 0x00008000>,
+						  <0xf4334014 0x0000062c>,
+						  <0xf4334018 0x0000001f>, /* Icp */
+						  <0xf4334028 0x0000d210>,
+						  /* #LEQ adapt, CMU Rs, Cp */
+						  <0xf433402c 0x0000b905>, /* #OOBS */
+						  <0xf4334030 0x0000c008>, /* #RX detect */
+						  <0xf4334034 0x0000f712>,
+						  <0xf4334038 0x00001000>, /* #TX_SEL_VCM */
+						  <0xf4334074 0x0000da1f>,
+						  <0xf4334080 0x0000d466>,
+						  <0xf4334084 0x000066aa>,
+						  <0xf4334088 0x00000013>,
+						  <0xf433408c 0x0000bb66>,
+						  <0xf4334090 0x00004f0c>,
+						  <0xf4334098 0x0000c40b>,
+						  <0xf43340ac 0x0000b003>,
+						  <0xf43340b8 0x0000fffe>, /* CDR timer */
+
+						  /* S0_1 gen2 */
+						  <0xf4334168 0x00000000>,
+
+						  <0xf4334104 0x0000204a>,
+						  <0xf4334108 0x00006042>,
+						  <0xf4334110 0x00008000>,
+						  <0xf4334114 0x0000062c>,
+						  <0xf4334118 0x0000001f>, /* Icp */
+						  <0xf4334128 0x0000d210>,
+						  /* #LEQ adaption, CMU Rs, Cp */
+						  <0xf433412c 0x0000b905>, /* #OOBS */
+						  <0xf4334130 0x0000c008>, /* #RX detect */
+						  <0xf4334134 0x0000f712>,
+						  <0xf4334138 0x00001000>, /* #TX_SEL_VCM */
+						  <0xf4334174 0x0000da1f>,
+						  <0xf4334178 0x0000e1e0>,
+						  <0xf4334184 0x000066aa>,
+						  <0xf4334188 0x00000013>,
+						  <0xf433418c 0x0000bb66>,
+						  <0xf4334190 0x00004f10>,
+						  <0xf43341ac 0x0000b003>,
+						  <0xf43341b8 0x0000fffe>, /* CDR timer */
+						  <0xf43341bc 0x00005100>;
+};
+
+&pcie1 {
+			status = "okay";
+
+			resets = <&block_rst PCI1_RESET>, <&dphy_rst PHY_S1_PCIE_RESET>;
+			reset-names = "core_reset", "phy_reset";
+
+			reset-gpios = <&pgpio 1 GPIO_ACTIVE_LOW>;
+			ready-time = /bits/ 16 <200>;
+			serdes-cfg0 =
+					/* S1_0 gen1 */
+					<0xf4335068 0x00000000>,
+					<0xf4335004 0x00001852>,
+					<0xf4335008 0x00006042>,
+					<0xf4335010 0x00008000>,
+					<0xf4335014 0x0000062c>,
+					<0xf4335018 0x00000007>,
+					<0xf4335028 0x0000d210>,
+					<0xf433502c 0x0000b905>,
+					<0xf4335030 0x0000c008>,
+					<0xf4335034 0x0000f712>,
+					<0xf4335038 0x00001000>,
+					<0xf4335074 0x0000da1f>,
+					<0xf4335080 0x0000d466>,
+					<0xf4335084 0x000066aa>,
+					<0xf4335088 0x00000013>,
+					<0xf433508c 0x0000bb66>,
+					<0xf4335090 0x00004f0c>,
+					<0xf43350ac 0x0000b003>,
+					<0xf43350b8 0x00000ffe>,
+
+					/* S1_0 gen2 */
+					<0xf4335168 0x00000000>,
+					<0xf4335104 0x0000204a>,
+					<0xf4335108 0x00006042>,
+					<0xf4335110 0x00008000>,
+					<0xf4335114 0x0000062c>,
+					<0xf4335118 0x00000010>,
+					<0xf4335128 0x0000d210>,
+					<0xf433512c 0x0000b905>,
+					<0xf4335130 0x0000c008>,
+					<0xf4335134 0x0000f712>,
+					<0xf4335138 0x00001000>,
+					<0xf4335174 0x0000da1f>,
+					<0xf4335178 0x0000e1e0>,
+					<0xf4335184 0x000066aa>,
+					<0xf4335188 0x00000013>,
+					<0xf433518c 0x0000bb66>,
+					<0xf4335190 0x00004f10>,
+					<0xf43351ac 0x0000b003>,
+					<0xf43351b8 0x0000fffe>,
+					<0xf43351bc 0x00005100>;
+
+			serdes-cfg1 =
+					/* S1_1 gen1 */
+					<0xf4336068 0x00000000>,
+					<0xf4336004 0x00001852>,
+					<0xf4336008 0x00006042>,
+					<0xf4336010 0x00008000>,
+					<0xf4336014 0x0000062c>,
+					<0xf4336018 0x00000007>,
+					<0xf4336028 0x0000d210>,
+					<0xf433602c 0x0000b905>,
+					<0xf4336030 0x0000c008>,
+					<0xf4336034 0x0000f712>,
+					<0xf4336038 0x00001000>,
+					<0xf4336074 0x0000da1f>,
+					<0xf4336080 0x0000d466>,
+					<0xf4336084 0x000066aa>,
+					<0xf4336088 0x00000013>,
+					<0xf433608c 0x0000bb66>,
+					<0xf4336090 0x00004f0c>,
+					<0xf4336098 0x0000c40b>,
+					<0xf43360ac 0x0000b003>,
+					<0xf43360b8 0x0000fffe>,
+
+					/* S1_1 gen2 */
+					<0xf4336168 0x00000000>,
+					<0xf4336104 0x0000204a>,
+					<0xf4336108 0x00006042>,
+					<0xf4336110 0x00008000>,
+					<0xf4336114 0x0000062c>,
+					<0xf4336118 0x00000010>,
+					<0xf4336128 0x0000d210>,
+					<0xf433612c 0x0000b905>,
+					<0xf4336130 0x0000c008>,
+					<0xf4336134 0x0000f712>,
+					<0xf4336138 0x00001000>,
+					<0xf4336174 0x0000da1f>,
+					<0xf4336178 0x0000e1e0>,
+					<0xf4336184 0x000066aa>,
+					<0xf4336188 0x00000013>,
+					<0xf433618c 0x0000bb66>,
+					<0xf4336190 0x00004f10>,
+					<0xf43361ac 0x0000b003>,
+					<0xf43361b8 0x0000fffe>,
+					<0xf43361bc 0x00005100>;
+	};
+
+&pcie2 {
+			status = "okay";
+
+			resets = <&block_rst PCI2_RESET>, <&dphy_rst PHY_S2_PCIE_RESET>;
+			reset-names = "core_reset", "phy_reset";
+
+			ready-time = /bits/ 16 <50>;
+			reset-gpios = <&pgpio 2 GPIO_ACTIVE_LOW>;
+
+			serdes-cfg0 = /* S2_0 gen1 */
+						  <0xf4337004 0x00001852>,
+						  <0xf4337008 0x00006042>,
+						  <0xf4337010 0x00009000>,
+						  <0xf4337014 0x0000c314>,
+						  <0xf4337018 0x00000007>, /* Icp */
+						  <0xf4337028 0x0000d208>,
+						  /* LEQ adaption, CMU Rs, Cp */
+						  <0xf433702c 0x0000b905>, /* #OOBS */
+						  <0xf4337030 0x0000c008>, /* #RX detect */
+						  <0xf4337034 0x0000f712>,
+						  <0xf4337038 0x00001000>, /* #TX_SEL_VCM */
+						  <0xf4337080 0x0000c466>,
+						  <0xf4337084 0x000066aa>,
+						  <0xf4337088 0x00000013>,
+						  <0xf433708c 0x0000bb66>,
+						  <0xf4337090 0x00004f0c>,
+						  <0xf43370ac 0x0000b001>,
+
+						  /* S2_0 gen2 */
+						  <0xf4337104 0x0000204a>,
+						  <0xf4337108 0x00006042>,
+						  <0xf4337110 0x00009000>,
+						  <0xf4337114 0x0000c314>,
+						  <0xf4337118 0x00000007>, /* Icp */
+						  <0xf4337128 0x0000d208>,
+						  /* LEQ adaption, CMU Rs, Cp */
+						  <0xf433712c 0x0000b905>, /* #OOBS */
+						  <0xf4337130 0x0000c008>, /* #RX detect */
+						  <0xf4337134 0x0000f712>,
+						  <0xf4337138 0x00001000>, /* #TX_SEL_VCM */
+						  <0xf4337178 0x00002ceb>,
+						  <0xf4337180 0x0000c466>, /* TX swing */
+						  <0xf4337184 0x000066aa>,
+						  <0xf4337188 0x00000013>,
+						  <0xf433718c 0x0000bb66>,
+						  <0xf4337190 0x00004f10>,
+						  <0xf43371ac 0x0000b001>,
+						  <0xf43371bc 0x0000a046>;
+};
+
+&u2phy {
+	u2port0-vbus-gpio = <&pgpio 5 GPIO_ACTIVE_HIGH>;
+	u2portmask = <0x7>;
+	status = "okay";
+};
+
+&u3phy {
+	u3port0-vbus-gpio = <&pgpio 3 GPIO_ACTIVE_HIGH>;
+	u3port1-vbus-gpio = <&pgpio 4 GPIO_ACTIVE_HIGH>;
+	u2portmask = <0x7>;
+	u3portmask = <0x3>;
+	status = "okay";
+};
+
+&usb2 {
+	status = "okay";
+};
+
+&usb3 {
+	status = "okay";
+};
+
+/* Workaround: reset GPIO0_8 to GPIO function for emmc boot. */
+#if 0
+&mmc_ctrl_default {
+	data_signals {
+		function = "gpio";
+	};
+};
+#endif

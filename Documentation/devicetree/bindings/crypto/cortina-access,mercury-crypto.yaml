@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2024 Cortina-Access
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/crypto/cortina,mercury-crypto.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: Cortina-Access Mercury Crypto Accelerator
+
+maintainers:
+  - Eason Chiang <eason.chiang@cortina-access.com>
+
+description: |
+  Device tree bindings for the Realtek Mercury Crypto accelerator,
+  providing hardware support for cryptographic operations such as IPsec.
+
+properties:
+  compatible:
+     const: realtek,mercury-crypto
+     const: realtek,8277c-crypto
+
+  reg:
+    description: Memory regions for the crypto hardware.
+    items:
+      - description: Base address and size for crypto registers.
+      - description: Address and size for protection control registers.
+    minItems: 2
+    maxItems: 2
+
+  interrupts:
+    description: Interrupt line for the crypto hardware.
+    maxItems: 1
+
+  interrupt-parent:
+    description: Specifies the interrupt controller for the crypto hardware.
+    $ref: /schemas/types.yaml#/definitions/phandle
+
+required:
+  - compatible
+  - reg
+  - interrupts
+  - interrupt-parent
+
+additionalProperties: false
+
+examples:
+  - |
+/* Ipsec0 */
+crypto0: crypto0@90500000 {
+        compatible = "realtek,mercury-crypto";
+        interrupt-parent = <&gic>;
+        interrupts = <GIC_SPI IRQ_GLB_CRYPTO0_MPM IRQ_TYPE_LEVEL_HIGH>;
+        reg = <0x0 0x90500000 0x0 0x1D00>,
+                <0x0 0x90303090 0x0 0x4>;
+        pe_ctrl_crypto_prot= <0x10>;
+};
+
+/* Ipsec1 */
+crypto1: crypto1@90A00000 {
+        compatible = "realtek,mercury-crypto";
+        interrupt-parent = <&gic>;
+        interrupts = <GIC_SPI IRQ_GLB_CRYPTO1_MPM IRQ_TYPE_LEVEL_HIGH>;
+        reg = <0x0 0x90A00000 0x0 0x1D00>,
+                <0x0 0x90303090 0x0 0x4>;
+        pe_ctrl_crypto_prot= <0x40>;
+};

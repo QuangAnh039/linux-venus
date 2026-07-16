@@ -1,0 +1,43 @@
+
+config ARCH_CORTINA_ACCESS
+	bool "Cortina-Access SoC Family"
+	select GPIOLIB
+	select SOC_BUS
+	help
+	  This enables support for Cortina-Access SoC Family
+
+choice
+	prompt "Cortina-Access Arch Type"
+	depends on ARCH_CORTINA_ACCESS
+	default ARCH_CA_MERCURY
+	help
+	  Choose the Cortina Access' arch type
+
+	config ARCH_CA_MERCURY
+		bool "Mercury(CA-8299)"
+		select GENERIC_IRQ_CHIP
+		help
+		  Cortina Access Mercury SoC
+
+	config ARCH_CA_VENUS
+		bool "Venus(CA-8289)"
+		select GENERIC_IRQ_CHIP
+		help
+		  Cortina Access Venus SoC
+endchoice
+
+config CORTINA_ACCESS_BOARD_FPGA
+	bool "FPGA Board"
+	depends on ARCH_CORTINA_ACCESS
+	default n
+	help
+	  Cortina-Access FPGA Board
+
+config CORTINA_ACCESS_SMCC
+	bool
+	depends on ARCH_CA_VENUS
+	default y
+	help
+	  SMC call for Cortina ARMv8 platform
+
+source "arch/arm64/Kconfig.hook"

@@ -1,0 +1,53 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/mailbox/cortina-access,pelog.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: PE log reserved memory for CA8299 from Cortina Access, Inc.
+
+description:
+  pelog_reserved provides 512KB RAM storage for PE log functionality.
+
+  Regions in the /pelog_reserved node is referenced by the pelog device
+  node by adding a memory-region property to the device node.
+
+maintainers:
+  - Ting Wu <ting.wu@cortina-access.com>
+
+properties:
+  compatible:
+    const: cortina-access,pelog
+
+  reg:
+    maxItems: 1
+    description:
+      PE log reserved memory.
+
+  memory-region:
+    description:
+      Region of memories reserved for the PE logs.
+
+required:
+  - compatible
+  - memory-region
+  - reg
+
+additionalProperties: false
+
+examples:
+  - |
+    reserved-memory {
+        #address-cells = <2>;
+        #size-cells = <2>;
+        ranges;
+        pelog_reserved: pelog_shm@13902000 {
+              no-map;
+              reg = <0x00000000 0x13902000 0x0 0x80000>;
+        };
+    };
+
+    pelog@0 {
+        compatible = "cortina-access,pelog"; /* PELOG */
+        memory-region = <&pelog_reserved>;
+    };

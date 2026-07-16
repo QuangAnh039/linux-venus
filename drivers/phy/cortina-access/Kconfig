@@ -1,0 +1,28 @@
+# SPDX-License-Identifier: GPL-2.0-only
+#
+# Phy drivers for Cortina-Access SoCs PHYs
+#
+config PHY_CA8299
+	tristate "Cortina Access CA8299 PHY Support"
+	depends on OF
+	depends on ARCH_CORTINA_ACCESS || COMPILE_TEST
+	select GENERIC_PHY
+	help
+	  Choose this option if you want to add CA8299
+	  SoC PHY support in your system.
+	  If unsure, say N.
+	  This framework is designed to provide a generic interface for PHY
+	  devices present in the kernel. This layer will have the generic
+	  API by which phy drivers can create PHY using the phy framework and
+	  phy users can obtain reference to the PHY. All the users of this
+	  framework should select this config.
+
+config PHY_CA8289
+	tristate "Cortina Access SoCs PHY driver"
+	depends on OF
+	depends on ARCH_CORTINA_ACCESS || COMPILE_TEST
+	select GENERIC_PHY
+	help
+	  Choose this option if you want to add Cortina
+	  Access SoCs(which except CA8299) PHY support.
+	  If unsure, say N.

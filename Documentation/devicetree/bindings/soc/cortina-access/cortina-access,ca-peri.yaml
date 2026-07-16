@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2023 Cortina-Access
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/soc/cortina-access,ca-peri.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: Cortina-Access peripheral interface driver for CA platform API
+
+maintainers:
+  - Yi Ding <yi.ding@cortina-access.com>
+
+properties:
+  compatible:
+    const: cortina-access,ca-peri
+
+  reg:
+    items:
+      - description: Control registers base address and length
+
+required:
+  - compatible
+  - reg
+
+additionalProperties: false
+
+examples:
+  - |
+	ca_peri:ca_peri@0{
+		compatible = "cortina-access,ca-peri";
+		reg = <0x0 0xf4329018 0x0 0x460>,
+		      <0x0 0xf4320000 0x0 0x200>,
+		      <0x0 0xfff80800 0x0 0x10>,
+		      <0x0 0xfff80000 0x0 0x400>;
+		interrupt-parent = <&per_ictl>;
+		interrupts = <3>;
+		interrupt-names = "TMR2";
+	};

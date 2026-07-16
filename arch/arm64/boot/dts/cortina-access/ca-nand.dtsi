@@ -1,0 +1,29 @@
+// SPDX-License-Identifier: GPL-2.0
+/*
+ * ca-nand.dtsi - Device Tree Include file for Cortina-Access SoC with
+ * Nand flash controller.
+ *
+ * Copyright (C) 2016 Cortina-Access <jason.li@cortina-access.com>
+ *
+ */
+
+/ {
+	nflash: nflash@f4324000 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "cortina-access,nflash";
+		reg =   <0x00000000 0xf4324000 0x0 0x3a8>, /* Flash controller */
+			<0x00000000 0xE0000000 0x0 0x10000000>,	/* Flash memory base */
+			<0x00000000 0xf7001000 0x0 0xb0>, /* DMA global register */
+			<0x00000000 0xf7001a00 0x0 0x80>; /* DMA control base */
+		nand-ecc-mode = "hw";
+		nand-ecc-alg = "bch";
+		nand-ecc-placement;
+		nand-ecc-strength = <16>;
+		nand-ecc-step-size = <1024>;
+		/* force-ace-on; */
+		/* number of data bytes that are covered by a single ECC step*/
+		resets = <&block_rst FLASH_RESET>;
+		reset-names = "flash_reset";
+	};
+};

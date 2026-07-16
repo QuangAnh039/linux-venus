@@ -1,0 +1,79 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/clock/cortina-access,mercury-mux-clk.yaml#
+$schema: http://devicetree.org/meta-schemas/cortina-access-mercury-mux-clk.yaml#
+
+title: Cortina-Access Mercury platform Mux Clock Device Tree Bindings
+
+maintainers:
+  - Arthur <arthur.li@cortina-access.com>
+
+deprecated: true
+
+properties:
+  "#clock-cells":
+    const: 0
+
+  compatible:
+    enum:
+      - cortina-access,mux-cpu-clk
+      - cortina-access,mux-pe-clk
+  reg:
+    maxItems: 1
+
+  clocks:
+    minItems: 2
+    maxItems: 4
+    description: >
+      The parent order must match the hardware programming order.
+
+required:
+  - "#clock-cells"
+  - compatible
+  - clocks
+  - operate-shift
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,mux-cpu-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,mux-pe-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+examples:
+  - |
+    mux_cpu_clk: mux_cpu {
+        compatible = "cortina-access,mux-cpu-clk";
+        #clock-cells = <0>;
+        clocks = <&pll_cpll_clk>, <&div_f2c_clk>;
+        operate-shift = /bits/ 8 <CA8299_CPLLDIV_CF_SEL>;
+    };
+  - |
+    mux_pe_clk: mux_pe {
+        compatible = "cortina-access,mux-pe-clk";
+        #clock-cells = <0>;
+        clocks = <&div_f_clk>, <&div_c2f_clk>;
+        operate-shift = /bits/ 8 <CA8299_PEDIV_OFFLOAD_SEL>;
+    };
+
+
+...

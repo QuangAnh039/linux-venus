@@ -1,0 +1,58 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/spi/cortina-access,spi.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: SPI driver for Cortina-Access platform, Inc.
+
+maintainers:
+  - Yi Ding <Yi.Ding@cortina-access.com>
+
+description:
+  This hardware spi is present on Cortina-Access platform.
+
+properties:
+  compatible:
+    enum:
+      - cortina-access,venus-spi
+      - cortina-access,mercury-spi
+
+  reg:
+    maxItems: 2
+    description:
+      Hareware address of SPI controller
+
+  clocks:
+    maxItems: 1
+
+  interrupts:
+    maxItems: 1
+
+
+required:
+  - compatible
+  - reg
+  - clocks
+  - interrupts
+
+additionalProperties: false
+
+examples:
+  - |
+
+/ {
+	spi0: spi@f43290f4 {
+		compatible = "cortina-access,mercury-spi";
+		reg = <0x00000000 0xf43290f4 0x0 0x40>;
+		reg-names = "spi_ctrl";
+		interrupt-parent = <&per_ictl>;
+		interrupts = <IRQ_PER_SPI>;
+		clocks = <&apb_pclk>;
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+};
+
+
+...

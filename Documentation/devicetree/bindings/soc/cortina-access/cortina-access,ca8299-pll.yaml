@@ -1,0 +1,33 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2025 Cortina-Access
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/soc/cortina-access,ca8299-pll.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: Cortina-Access peripheral clock driver for CA platform API
+
+maintainers:
+  - Ting Wu <ting.wu@cortina-access.com>
+
+properties:
+  compatible:
+    const: cortina-access,ca8299-pll
+
+  reg:
+    items:
+      - description: Control registers base address and length
+
+required:
+  - compatible
+  - reg
+
+additionalProperties: false
+
+examples:
+  - |
+	glb_pll: pll@f4320274 {
+		compatible = "cortina-access,ca8299-pll";
+		reg = <0x0 0xf4320274 0x0 0x4>,
+		      <0x0 0xf4320278 0x0 0x4>;
+	};

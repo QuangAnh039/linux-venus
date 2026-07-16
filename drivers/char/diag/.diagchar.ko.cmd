@@ -1,0 +1,1 @@
+cmd_drivers/char/diag/diagchar.ko := aarch64-openwrt-linux-musl-ld -r  -EL  -maarch64elf -z noexecstack   --build-id=sha1  -T scripts/module.lds -o drivers/char/diag/diagchar.ko drivers/char/diag/diagchar.o drivers/char/diag/diagchar.mod.o;  true

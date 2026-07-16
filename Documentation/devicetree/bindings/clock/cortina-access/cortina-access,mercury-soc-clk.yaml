@@ -1,0 +1,61 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/clock/cortina-access,mercury-soc-clk.yaml#
+$schema: http://devicetree.org/meta-schemas/cortina-access-mercury-soc-clk.yaml#
+
+title: Cortina-Access Mercury SOC Clock Device Tree Bindings
+
+maintainers:
+  - Arthur <arthur.li@cortina-access.com>
+
+deprecated: true
+
+properties:
+  "#clock-cells":
+    const: 0
+
+  compatible:
+    enum:
+      - cortina-access,ca8299-soc-clks
+
+  reg:
+    maxItems: 1
+
+  clocks:
+    minItems: 1
+    maxItems: 4
+    description: >
+      The parent order must match the hardware programming order.
+
+  clock-output-names:
+    maxItems: 1
+
+required:
+  - "#clock-cells"
+  - compatible
+  - clocks
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,ca8299-soc-clks
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+examples:
+  - |
+    soc_clks {
+            compatible = "cortina-access,ca8299-soc-clks";
+            reg = <0x0 0xf4320000 0x0 0x01d0>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+    }
+...

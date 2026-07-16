@@ -1,0 +1,81 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/iommu/cortina,atu.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: Cortina Access ATU Device Tree Bindings
+
+properties:
+  compatible:
+    const: cortina-access,atu
+
+  reg:
+    minItems: 2
+    maxItems: 2
+
+  reg-names:
+    oneOf:
+      - items:
+        - const: pcie0_atu
+      - items:
+        - const: pcie1_atu
+      - items:
+        - const: pcie2_atu
+      - items:
+        - const: sata_atu
+      - items:
+        - const: sd_atu"
+      - items:
+        - const: usb0_atu
+      - items:
+        - const: usb1_atu
+      - items:
+        - const: pe0_atu
+      - items:
+        - const: pe1_atu
+      - items:
+        - const: crypto0_atu
+      - items:
+        - const: crypto1_atu
+
+  atu-type:
+    description:
+      The value is 0 ~ 2. 0 is AXI_STD, 1 is AXI_PLUS, and 2 is AHB_PLUS.
+    minItems: 0
+    maxItems: 2
+
+  keep-init: true
+    description:
+      Keep the default configuration of hardware.
+
+  coherent-hi-addr:
+    description:
+      This is high 32 bits for hardware DMA coherent faric route.
+    oneOf:
+      - items:
+        - const: CCIS0_HIGH_ADDR
+      - items:
+        - const: CCIS1_HIGH_ADDR
+
+  '#iommu-cells':
+    const: 0
+
+required:
+  - compatible
+  - reg
+  - reg-names
+  - "#iommu-cells"
+
+additionalProperties: false
+
+examples:
+  - |
+      pcie0_atu: atu@f432c000 {
+          compatible = "cortina-access,atu";
+          reg = <0x0 0xf432c000 0x0 0x0000001c>;
+          reg-names = "pcie0_atu";
+          atu-type = <0>;
+          coherent-hi-addr = <CCIS1_HIGH_ADDR>;
+          #iommu-cells = <0>;
+      };

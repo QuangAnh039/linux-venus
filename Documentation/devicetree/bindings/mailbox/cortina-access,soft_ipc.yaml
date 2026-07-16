@@ -1,0 +1,77 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/mailbox/cortina-access,soft_ipc.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: IPC controller for CA8299 from Cortina Access, Inc.
+
+description:
+  This controller is present on CA8299, providing
+  the signaling between PE0/1/2/3 and ARM.
+
+maintainers:
+  - Ting Wu <ting.wu@cortina-access.com>
+
+properties:
+  compatible:
+    const: cortina-access,soft_ipc
+
+  reg:
+    maxItems: 1
+    description:
+      Soft IRQ control registers.
+
+  memory-region:
+    description:
+      Region of memories reserved for the IPC utilities.
+
+  interrupts:
+    description:
+      IRQ offset in peripheral.
+
+ pe-ipc-cpuid:
+    description:
+      PE processor id using the mailbox (0 to 3).
+    enum: [0, 3]
+
+required:
+  - compatible
+  - memory-region
+  - reg
+  - interrupt-parent
+  - interrupts
+  - pe-ipc-cpuid
+
+additionalProperties: false
+
+examples:
+  - |
+    #include <dt-bindings/soc/ca8299_irqs.h>
+    #include <dt-bindings/interrupt-controller/arm-gic.h>
+
+    /*
+	   * PER_IRQ_SOFT1/2/3/4 for ARM to PE0/1/2/3
+	   * PER_IRQ_SOFT0 PE0/1/2/3 to ARM
+	   */
+    soft_ipc: soft_ipc@0 {
+      compatible = "cortina-access,soft_ipc";
+	    memory-region = <&ipc_reserved>;
+		  reg = <0x00000000 0xf4329000 0x0 0x38>;
+		  interrupt-parent = <&per_ictl>;
+		  interrupts = <IRQ_PER_SOFT0>; /*PER_IRQ_SOFT0*/
+		  pe-ipc-cpuid = <0>; /*ARM CPU*/
+	  };
+
+    reserved-memory {
+		  #address-cells = <2>;
+		  #size-cells = <2>;
+		  ranges;
+      ipc_reserved: ipc_shm@13800000 {
+        no-map;
+        reg = <0x00000000 0x13800000 0x0 0x102000>;
+        /* per PE needs 0x20400*2=0x40800 (258KB) */
+      };
+    };
+
+...

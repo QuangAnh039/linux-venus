@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+# Copyright 2024 Cortina-Access
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/usb/cortina-access,ca-xhci.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: Cortina-Access SoC USB xHCI Controller
+
+allOf:
+  - $ref: "usb-hcd.yaml"
+
+maintainers:
+  - Pengpeng Chen <pengpeng.chen@cortina-access.com>
+
+properties:
+  compatible:
+    const: cortina-access,ca-xhci
+
+  reg:
+    maxItems: 1
+
+  reg-names:
+    const: usb3-xhci-reg
+
+  interrupts:
+    maxItems: 1
+
+  interrupt-parent:
+    maxItems: 1
+
+  usb-phy:
+    maxItems: 1
+
+required:
+  - compatible
+  - reg
+  - reg-names
+  - interrupts
+  - interrupts-parent
+  - usb-phy
+
+additionalProperties: false
+
+examples:
+  - |
+    usb3-xhci@f0200000 {
+        compatible = "cortina-access,ca-xhci";
+        reg = <0x0 0xf0200000 0x0 0xa8>;
+        reg-names = "usb3-xhci-reg"
+        interrupts = <GIC_SPI IRQ_GLB_USB3_1 IRQ_TYPE_LEVEL_HIGH>;
+        interrupt-parent = <&gic>;
+        usb-phy = <&usb_ssphy>;
+    };
+
+...

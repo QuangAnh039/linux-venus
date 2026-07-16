@@ -1,0 +1,104 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/clock/cortina-access,mercury-pll-clk.yaml#
+$schema: http://devicetree.org/meta-schemas/cortina-access-mercury-pll-clk.yaml#
+
+title: Cortina-Access Mercury PLL Clock Device Tree Bindings
+
+maintainers:
+  - Arthur <arthur.li@cortina-access.com>
+
+deprecated: true
+
+properties:
+  "#clock-cells":
+    const: 0
+
+  compatible:
+    enum:
+      - cortina-access,ca8299-pll-cpll-clk
+      - cortina-access,ca8299-pll-fpll-clk
+      - cortina-access,ca8299-pll-epll-1p5g-clk
+      - cortina-access,ca8299-pll-epll-1p2g-clk
+      - cortina-access,ca8299-pll-epll-1g-clk
+
+  reg:
+    maxItems: 1
+
+  clocks:
+    minItems: 1
+    maxItems: 4
+    description: >
+      The parent order must match the hardware programming order.
+
+  clock-output-names:
+    maxItems: 1
+
+required:
+  - "#clock-cells"
+  - compatible
+  - clocks
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,ca8299-pll-cpll-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,ca8299-pll-fpll-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,ca8299-pll-epll-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+examples:
+  - |
+    pll_cpll_clk: pll_cpll {
+        compatible = "cortina-access,ca8299-pll-cpll-clk";
+        #clock-cells = <0>;
+        clocks = <&fixed_reference_clk>;
+        /* init-mult = /bits/ 8 <48>; */
+    };
+
+  - |
+    pll_fpll_clk: pll_fpll {
+        compatible = "cortina-access,ca8299-pll-fpll-clk";
+        #clock-cells = <0>;
+        clocks = <&fixed_reference_clk>;
+        /* init-mult = /bits/ 8 <80>; */
+    };
+
+  - |
+
+    pll_epll_clk: pll_epll {
+        compatible = "cortina-access,ca8299-pll-epll-clk";
+        #clock-cells = <0>;
+        clocks = <&fixed_reference_clk>;
+        /* init-mult = /bits/ 8 <64>; */
+    };
+...

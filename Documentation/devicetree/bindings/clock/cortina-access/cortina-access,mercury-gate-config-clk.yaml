@@ -1,0 +1,56 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/clock/cortina-access,mercury-gate-config-clk.yaml#
+$schema: http://devicetree.org/meta-schemas/cortina-access-mercury-gate-config-clk.yaml#
+
+title: Cortina-Access Mercury platform Gate Clock Device Tree Bindings
+
+maintainers:
+  - Arthur <arthur.li@cortina-access.com>
+
+deprecated: true
+
+properties:
+  "#clock-cells":
+    const: 0
+
+  compatible:
+    enum:
+      - cortina-access,gate-config-clk
+  reg:
+    maxItems: 1
+
+  clocks:
+    minItems: 1
+    maxItems: 5
+    description: >
+      The parent order must match the hardware programming order.
+
+required:
+  - "#clock-cells"
+  - compatible
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,gate-config-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 5
+
+examples:
+  - |
+    gate_pcie0_clk: gate_pcie0 {
+        compatible = "cortina-access,gate-config-clk";
+        #clock-cells = <0>;
+        operate-shift = /bits/ 8 <CA8299_CFG_CLKEN_PCIE0>;
+    };
+
+...

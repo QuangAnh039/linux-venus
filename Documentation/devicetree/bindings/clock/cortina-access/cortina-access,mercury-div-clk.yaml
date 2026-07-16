@@ -1,0 +1,123 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/clock/cortina-access,mercury-div-clk.yaml#
+$schema: http://devicetree.org/meta-schemas/cortina-access-mercury-div-clk.yaml#
+
+title: Cortina-Access Mercury platform Divider Clock Device Tree Bindings
+
+maintainers:
+  - Arthur <arthur.li@cortina-access.com>
+
+deprecated: true
+
+properties:
+  "#clock-cells":
+    const: 0
+
+  compatible:
+    enum:
+      - cortina-access,div-cpll-clk
+      - cortina-access,div-fpll-clk
+      - cortina-access,div-epll-clk
+      - cortina-access,div-epll2-clk
+  reg:
+    maxItems: 1
+
+  clocks:
+    minItems: 2
+    maxItems: 4
+    description: >
+      The parent order must match the hardware programming order.
+
+required:
+  - "#clock-cells"
+  - compatible
+  - clocks
+  - operate-shift
+  - operate-width
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,div-cpll-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,div-fpll-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,div-epll-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,div-fpl2-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 1
+examples:
+  - |
+    div_f2c_clk: div_f2c {
+        compatible = "cortina-access,div-cpll-clk";
+        #clock-cells = <0>;
+        clocks = <&pll_fpll_clk>;
+        operate-shift = /bits/ 8 <CA8299_CPLLDIV_F2C_OFFSET>;
+        operate-width = /bits/ 8 <CA8299_CPLLDIV_F2C_SIZE>;
+    };
+  - |
+
+    div_peaxi_clk: div_peaxi {
+        compatible = "cortina-access,div-fpll-clk";
+        #clock-cells = <0>;
+        clocks = <&mux_pe_clk>;
+        operate-shift = /bits/ 8 <CA8299_FPLLDIV_PEAXI_OFFSET>;
+        operate-width = /bits/ 8 <CA8299_FPLLDIV_PEAXI_SIZE>;
+        init-div = /bits/ 8 <2>;
+    };
+  - |
+    div_crypto_clk: div_crypto {
+        compatible = "cortina-access,div-epll-clk";
+        #clock-cells = <0>;
+        clocks = <&pll_epll_clk>;
+        operate-shift = /bits/ 8 <CA8299_EPLLDIV_DW_PER_OFFSET>;
+        operate-width = /bits/ 8 <CA8299_EPLLDIV_DW_PER_SIZE>;
+        init-div = /bits/ 8 <6>;
+    };
+  - |
+    div_cci_clk: div_cci {
+        compatible = "cortina-access,div-epll2-clk";
+        #clock-cells = <0>;
+        clocks = <&pll_epll_clk>;
+        operate-shift = /bits/ 8 <CA8299_EPLLDIV2_CCI_OFFSET>;
+        operate-width = /bits/ 8 <CA8299_EPLLDIV2_CCI_SIZE>;
+        init-div = /bits/ 8 <5>;
+    };
+...

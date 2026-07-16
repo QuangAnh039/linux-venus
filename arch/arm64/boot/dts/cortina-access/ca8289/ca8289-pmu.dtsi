@@ -1,0 +1,23 @@
+// SPDX-License-Identifier: GPL-2.0
+
+/ {
+	cpu-pmu {
+		compatible = "arm,armv8-pmuv3";
+		interrupts = <GIC_PPI 7 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	cci@f6000000 {
+		compatible = "arm,cci-550";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		reg = <0x0 0xf6000000 0x0 0x10000>;
+		ranges = <0x0 0x0 0xf6000000 0xA0000>;
+
+		cci-pmu@10000 {
+			compatible = "arm,cci-550-pmu,r0";
+			reg = <0x10000 0x80000>;
+
+			/* FIXME: miss interrupts implementation */
+		};
+	};
+};

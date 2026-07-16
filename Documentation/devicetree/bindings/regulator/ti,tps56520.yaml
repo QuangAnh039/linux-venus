@@ -1,0 +1,57 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/regulator/ti,tps56520.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: TI TPS56520 Voltage Regulator
+
+maintainers:
+  - Jason Li <jason.li@cortina-access.com>
+
+description: |
+  This binding describes the TPS56520 voltage regulator from Texas Instruments.
+  It is typically connected over I2C and provides a configurable output voltage
+  used to power components such as CPUs or SoCs.
+
+allOf:
+  - $ref: "regulator.yaml#"
+
+properties:
+  compatible:
+    const: "ti,tps56520"
+
+  reg:
+    maxItems: 1
+
+  ti,default-uV:
+    description: Default voltage in microvolts when enabled.
+    $ref: /schemas/types.yaml#/definitions/uint32
+
+required:
+  - compatible
+  - reg
+
+unevaluatedProperties: false
+
+examples:
+  - |
+    i2c {
+      #address-cells = <1>;
+      #size-cells = <0>;
+
+      vdd_regulator: tps56520@37 {
+        compatible = "ti,tps56520";
+        reg = <0x37>;
+
+        ti,default-uV = <900000>;
+
+        regulator-name = "vdd-cpu";
+        regulator-min-microvolt = <820000>;
+        regulator-max-microvolt = <990000>;
+        regulator-ramp-delay = <300000>;
+        regulator-enable-ramp-delay = <300000>;
+        regulator-boot-on;
+        regulator-always-on;
+      };
+    };

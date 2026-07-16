@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+# Copyright 2024 Cortina-Access
+%YAML 1.2
+---
+$id: "http://devicetree.org/schemas/phy/cortina-access,ca8289-phy.yaml#"
+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+
+title: Cortina-Access VENUS SoC Global PHY
+
+maintainers:
+  - Pengpeng Chen <pengpeng.chen@cortina-access.com>
+
+properties:
+  compatible:
+     const: cortina-access,venus-phy
+
+  reg:
+    maxItems: 1
+
+  reg-names:
+    items:
+      - const: phy_ctrl
+
+required:
+  - compatible
+  - reg
+  - reg-names
+
+additionalProperties: false
+
+examples:
+  - |
+    glb_phy: phy@f4320050 {
+		    #address-cells = <1>;
+		    #size-cells = <0>;
+		    compatible = "cortina-access,venus-phy";
+		    reg = <0x0 0xf4320050 0x0 0x20>;
+		    reg-names = "phy_ctrl";
+
+		    s0_pcie_phy0: phy@PHY_S0_PCIE0 {
+			    reg = <PHY_S0_PCIE0>;
+			    #phy-cells = <0>;
+			    serdes-reg = <0 0xf4333000 0 0x1000>;
+		    };
+
+		    s0_pcie_phy1: phy@PHY_S0_PCIE1 {
+			    reg = <PHY_S0_PCIE1>;
+			    #phy-cells = <0>;
+			    serdes-reg = <0 0xf4334000 0 0x1000>;
+		    };
+
+		    s1_pcie_phy0: phy@PHY_S1_PCIE0 {
+			    reg = <PHY_S1_PCIE0>;
+			    #phy-cells = <0>;
+			    serdes-reg = <0 0xf4335000 0 0x1000>;
+		    };
+
+		    s1_pcie_phy1: phy@PHY_S1_PCIE1 {
+			    reg = <PHY_S1_PCIE1>;
+			    #phy-cells = <0>;
+			    serdes-reg = <0 0xf4336000 0 0x1000>;
+		    };
+
+		    s2_pcie_phy0: phy@PHY_S2_PCIE0 {
+			    reg = <PHY_S2_PCIE0>;
+			    #phy-cells = <0>;
+			    serdes-reg = <0 0xf4337000 0 0x1000>;
+		    };
+	  };

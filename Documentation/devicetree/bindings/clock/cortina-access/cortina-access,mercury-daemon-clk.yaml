@@ -1,0 +1,85 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/clock/cortina-access,mercury-daemon-clk.yaml#
+$schema: http://devicetree.org/meta-schemas/cortina-access-mercury-daemon-clk.yaml#
+
+title: Cortina-Access Mercury platform Daemon Clock Device Tree Bindings
+
+maintainers:
+  - Arthur <arthur.li@cortina-access.com>
+
+deprecated: true
+
+properties:
+  "#clock-cells":
+    const: 0
+
+  compatible:
+    enum:
+      - cortina-access,ca8299-pe-daemon-clk
+      - cortina-access,ca8299-cpu-daemon-clk
+  reg:
+    maxItems: 1
+
+  clocks:
+    minItems: 1
+    maxItems: 5
+    description: >
+      The parent order must match the hardware programming order.
+
+required:
+  - "#clock-cells"
+  - compatible
+  - clocks
+  - init-speed
+
+additionalProperties: false
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,ca8299-pe-daemon-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 4
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: cortina-access,ca8299-cpu-daemon-clk
+
+    then:
+      properties:
+        clocks:
+          maxItems: 5
+examples:
+  - |
+    pe_daemon_clk: pe_daemon {
+        compatible = "cortina-access,ca8299-pe-daemon-clk";
+        #clock-cells = <0>;
+        clocks = <&fixed_reference_clk>,
+                 <&pll_fpll_clk>,
+                 <&div_f_clk>,
+                 <&mux_pe_clk>;
+        init-speed = <800000000>;
+    };
+  - |
+    cpu_daemon_clk: cpu_daemon {
+        compatible = "cortina-access,ca8299-cpu-daemon-clk";
+        #clock-cells = <0>;
+        clocks = <&fixed_reference_clk>,
+                 <&pll_cpll_clk>,
+                 <&div_f2c_clk>,
+                 <&mux_cpu_clk>,
+                 <&div_cortex_clk>;
+        init-speed = <1200000000>;
+        /* read-only; */
+    };
+
+...

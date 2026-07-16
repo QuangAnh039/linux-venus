@@ -1,0 +1,101 @@
+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+%YAML 1.2
+---
+$id: http://devicetree.org/schemas/pinctrl/cortina-access,ca8299-pinctrl.yaml#
+$schema: http://devicetree.org/meta-schemas/core.yaml#
+
+title: Cortina Access CA8299 SoC pin controller
+
+maintainers:
+  - Pengpeng Chen <Pengpeng.Chen@cortina-access.com>
+
+description:
+	- Pin control driver for Cortina-Access CA82xx SoCs.
+  - The pin controller node must be a subnode of the system controller node.
+
+Required properties:
+- compatible: "cortina-access,ca8299-pinctrl"
+- reg: Base address of the General Purpose Pin Mapping register block and the
+  size of the block.
+- pins: Multiple strings. Specifies the name(s) of one or more pins to be
+  configured by this node. The format of a pin name string is "GP_xy", where x
+  is an uppercase character from 'A' to 'R', and y is a digit from 0 to 7.
+- function: String. Specifies the pin mux selection. Values must be one of:
+  "gpio", "client_a", "client_b", "client_c"
+
+
+Subnodes of the pin controller contain pin control multiplexing set-up
+and pin configuration of individual pins.
+
+Example:
+  - |
+    pinctrl: pinctrl@0xf432014c {
+      compatible = "cortina-access,ca8299-pinctrl";
+      reg = <0x0 0xf4320078 0x0 0x2c>;
+      uart0_hw_fc: uart0_active {
+        data_signals {
+          pins = "PMUX_003";
+          function = "multi-fn";
+        };
+      };
+      uart2_default: uart2_active {
+        data_signals {
+          pins = "GPIO_000", "GPIO_001", "PMUX_004";
+          function = "multi-fn";
+        };
+      };
+      uart3_default: uart3_active {
+        data_signals {
+          pins = "GPIO_002", "GPIO_003", "PMUX_005";
+          function = "multi-fn";
+        };
+      };
+      spi_cs1: spi_cs1 {
+        data_signals {
+          pins = "GPIO_004", "PMUX_006";
+          function = "multi-fn";
+        };
+      };
+      spi_cs2: spi_cs2 {
+        data_signals {
+          pins = "GPIO_005", "PMUX_007";
+          function = "multi-fn";
+        };
+      };
+      spi_cs3: spi_cs3 {
+        data_signals {
+          pins = "GPIO_006", "PMUX_008";
+          function = "multi-fn";
+        };
+      };
+      spi_cs4: spi_cs4 {
+        data_signals {
+          pins = "GPIO_007", "PMUX_009";
+          function = "multi-fn";
+        };
+      };
+      led_ctrl_default: led_ctrl_active {
+        data_signals {
+          pins = "GPIO_011", "GPIO_012", "PMUX_019";
+          function = "multi-fn";
+        };
+      };
+      mmc_ctrl_default: mmc_ctrl_active {
+        data_signals {
+          pins = "GPIO_008", "GPIO_010", "PMUX_015", "PMUX_016";
+          function = "multi-fn";
+        };
+      };
+      pwm_ctrl0: pwm0_ctrl_active {
+        data_signals {
+          pins = "GPIO_114", "PMUX_010";
+          function = "multi-fn";
+        };
+      };
+      pwm_ctrl1: pwm1_ctrl_active {
+        data_signals {
+          pins = "GPIO_116", "PMUX_011";
+          function = "multi-fn";
+        };
+      };
+    };
